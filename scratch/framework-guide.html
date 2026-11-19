@@ -1,0 +1,1727 @@
+<title>Playwright Agilent Framework Guide</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Nunito:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground: #F8F5F0;
+    --surface: #FFFFFF;
+    --text: #2C3038;
+    --text-muted: #6B7280;
+    --accent: #1B7A6E;
+    --accent-light: #E6F5F2;
+    --highlight: #E9960A;
+    --highlight-light: #FEF7E6;
+    --code-bg: #F0EDE8;
+    --code-border: #DDD8D0;
+    --border: #E5E0D8;
+    --folder-bg: #2C3038;
+    --folder-text: #E2E5EA;
+    --line-num: #9CA3AF;
+    --keyword: #7C3AED;
+    --string: #0F766E;
+    --comment: #9CA3AF;
+    --func: #C2410C;
+    --type: #1D4ED8;
+    --tag: #BE185D;
+    --analogy-bg: #F0F4FF;
+    --analogy-border: #93B4F5;
+    --analogy-icon: #3B6DE0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #14161B;
+      --surface: #1C1F26;
+      --text: #E0E3E8;
+      --text-muted: #8B929E;
+      --accent: #3DD4C0;
+      --accent-light: #1A2E2B;
+      --highlight: #F0AD30;
+      --highlight-light: #2A2518;
+      --code-bg: #1A1D22;
+      --code-border: #2A2E36;
+      --border: #2A2E36;
+      --folder-bg: #0F1115;
+      --folder-text: #C8CCD4;
+      --line-num: #555D6A;
+      --keyword: #B794F4;
+      --string: #5EEAD4;
+      --comment: #555D6A;
+      --func: #FB923C;
+      --type: #60A5FA;
+      --tag: #F472B6;
+      --analogy-bg: #1A1D26;
+      --analogy-border: #3B5998;
+      --analogy-icon: #6B9CF0;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #14161B;
+    --surface: #1C1F26;
+    --text: #E0E3E8;
+    --text-muted: #8B929E;
+    --accent: #3DD4C0;
+    --accent-light: #1A2E2B;
+    --highlight: #F0AD30;
+    --highlight-light: #2A2518;
+    --code-bg: #1A1D22;
+    --code-border: #2A2E36;
+    --border: #2A2E36;
+    --folder-bg: #0F1115;
+    --folder-text: #C8CCD4;
+    --line-num: #555D6A;
+    --keyword: #B794F4;
+    --string: #5EEAD4;
+    --comment: #555D6A;
+    --func: #FB923C;
+    --type: #60A5FA;
+    --tag: #F472B6;
+    --analogy-bg: #1A1D26;
+    --analogy-border: #3B5998;
+    --analogy-icon: #6B9CF0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hero {
+    padding: 3.5rem 2rem 3rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .hero-eyebrow {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .hero h1 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1.15;
+    color: var(--text);
+    text-wrap: balance;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  /* --- Table of Contents --- */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    margin: 2.5rem 0;
+  }
+
+  .toc-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.35rem 1.5rem;
+  }
+
+  .toc a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.2rem 0;
+    transition: color 0.15s;
+  }
+
+  .toc a:hover { color: var(--accent); }
+
+  .toc .toc-num {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    min-width: 1.6rem;
+  }
+
+  /* --- Section Headers --- */
+  .file-section {
+    margin-top: 3rem;
+    scroll-margin-top: 1rem;
+  }
+
+  .file-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .file-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-family: 'Fira Code', monospace;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .file-icon.config { background: var(--highlight-light); color: var(--highlight); }
+  .file-icon.page { background: var(--accent-light); color: var(--accent); }
+  .file-icon.test { background: #F0E6FF; color: #7C3AED; }
+  .file-icon.util { background: #FFE6E6; color: #C2410C; }
+  .file-icon.data { background: #E6F0FF; color: #1D4ED8; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .file-icon.test { background: #2A1F3D; color: #B794F4; }
+    :root:not([data-theme="light"]) .file-icon.util { background: #2D1F18; color: #FB923C; }
+    :root:not([data-theme="light"]) .file-icon.data { background: #18202D; color: #60A5FA; }
+  }
+  :root[data-theme="dark"] .file-icon.test { background: #2A1F3D; color: #B794F4; }
+  :root[data-theme="dark"] .file-icon.util { background: #2D1F18; color: #FB923C; }
+  :root[data-theme="dark"] .file-icon.data { background: #18202D; color: #60A5FA; }
+
+  .file-section h2 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    line-height: 1.3;
+  }
+
+  .file-path {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    padding-left: 2.4rem;
+  }
+
+  .file-purpose {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    padding: 0.8rem 1.2rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  /* --- Code + Explanation blocks --- */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 0.3rem;
+  }
+
+  .code-block pre {
+    margin: 0;
+    padding: 1rem 1.2rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    line-height: 1.75;
+    overflow-x: auto;
+  }
+
+  .code-block .ln { color: var(--line-num); user-select: none; display: inline-block; min-width: 2.2rem; text-align: right; margin-right: 1rem; }
+  .code-block .kw { color: var(--keyword); }
+  .code-block .str { color: var(--string); }
+  .code-block .cm { color: var(--comment); font-style: italic; }
+  .code-block .fn { color: var(--func); }
+  .code-block .tp { color: var(--type); }
+  .code-block .tg { color: var(--tag); }
+
+  .explain {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.8rem;
+    font-size: 0.92rem;
+  }
+
+  .explain p { margin-bottom: 0.6rem; }
+  .explain p:last-child { margin-bottom: 0; }
+  .explain strong { color: var(--accent); font-weight: 600; }
+  .explain code {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    background: var(--code-bg);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+  }
+
+  /* --- Analogy callout --- */
+  .analogy {
+    background: var(--analogy-bg);
+    border: 1px solid var(--analogy-border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0 1.5rem;
+    font-size: 0.92rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+
+  .analogy-lamp {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    line-height: 1.4;
+  }
+
+  .analogy-label {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--analogy-icon);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+
+  /* --- Folder tree --- */
+  .tree {
+    background: var(--folder-bg);
+    color: var(--folder-text);
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    line-height: 1.9;
+    overflow-x: auto;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .tree .dir { color: #60A5FA; }
+  .tree .file { color: #A5B4C8; }
+  .tree .ann { color: #6B7280; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-style: italic; }
+
+  /* --- Group heading --- */
+  .group-label {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--text);
+    margin-top: 3.5rem;
+    margin-bottom: 0.3rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .group-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 2.5rem 0;
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 2.5rem 1.2rem 2rem; }
+    .container { padding: 0 1rem 3rem; }
+    .toc-grid { grid-template-columns: 1fr; }
+    .tree { padding: 1rem 1.2rem; font-size: 0.75rem; }
+  }
+</style>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Line-by-line walkthrough</div>
+  <h1>Your Playwright Framework, Explained</h1>
+  <p>Every file, every line &mdash; broken down in plain, simple language like you're hearing it for the first time.</p>
+</div>
+
+<div class="container">
+
+<!-- TABLE OF CONTENTS -->
+<nav class="toc">
+  <div class="toc-title">What's Inside</div>
+  <div class="toc-grid">
+    <a href="#big-picture"><span class="toc-num">00</span> The Big Picture</a>
+    <a href="#package-json"><span class="toc-num">01</span> package.json</a>
+    <a href="#tsconfig"><span class="toc-num">02</span> tsconfig.json</a>
+    <a href="#env-config"><span class="toc-num">03</span> env.config.ts</a>
+    <a href="#playwright-config"><span class="toc-num">04</span> playwright.config.ts</a>
+    <a href="#helpers"><span class="toc-num">05</span> helpers.ts</a>
+    <a href="#base-page"><span class="toc-num">06</span> BasePage.ts</a>
+    <a href="#home-page"><span class="toc-num">07</span> HomePage.ts</a>
+    <a href="#login-page"><span class="toc-num">08</span> LoginPage.ts</a>
+    <a href="#products-page"><span class="toc-num">09</span> ProductsPage.ts</a>
+    <a href="#cart-page"><span class="toc-num">10</span> CartPage.ts</a>
+    <a href="#checkout-page"><span class="toc-num">11</span> CheckoutPage.ts</a>
+    <a href="#contact-page"><span class="toc-num">12</span> ContactUsPage.ts</a>
+    <a href="#fixture"><span class="toc-num">13</span> base.fixture.ts</a>
+    <a href="#users-json"><span class="toc-num">14</span> users.json</a>
+    <a href="#contact-json"><span class="toc-num">15</span> contactUs.json</a>
+    <a href="#auth-spec"><span class="toc-num">16</span> auth.spec.ts</a>
+    <a href="#product-spec"><span class="toc-num">17</span> productSearch.spec.ts</a>
+    <a href="#cart-spec"><span class="toc-num">18</span> cart.spec.ts</a>
+    <a href="#checkout-spec"><span class="toc-num">19</span> checkout.spec.ts</a>
+    <a href="#contact-spec"><span class="toc-num">20</span> contactUs.spec.ts</a>
+    <a href="#a11y-spec"><span class="toc-num">21</span> accessibility.spec.ts</a>
+    <a href="#visual-spec"><span class="toc-num">22</span> visualRegression.spec.ts</a>
+    <a href="#example-spec"><span class="toc-num">23</span> example.spec.ts</a>
+  </div>
+</nav>
+
+<!-- ============================================================ -->
+<!--  SECTION 00 — BIG PICTURE                                    -->
+<!-- ============================================================ -->
+<section class="file-section" id="big-picture">
+  <h2 class="group-label" style="margin-top:0">The Big Picture</h2>
+  <p class="group-desc">Before diving into code, let's understand what this project is and how the folders are organized.</p>
+
+  <div class="analogy">
+    <div class="analogy-lamp">&#128161;</div>
+    <div>
+      <div class="analogy-label">Think of it this way</div>
+      <p>Imagine you have a robot that can open a web browser, click buttons, type text, and check if things look correct &mdash; all by itself, without a human touching the mouse. That robot is <strong>Playwright</strong>. This project is the <em>instruction manual</em> you wrote for that robot, telling it exactly what to do on the website <code>automationexercise.com</code> (a fake online shop for practicing).</p>
+    </div>
+  </div>
+
+  <div class="tree"><span class="dir">Playwright_Agilent/</span>
+├── <span class="file">package.json</span>            <span class="ann">← project ID card &amp; list of tools needed</span>
+├── <span class="file">tsconfig.json</span>           <span class="ann">← TypeScript language settings</span>
+├── <span class="file">playwright.config.ts</span>    <span class="ann">← master settings for the robot</span>
+│
+├── <span class="dir">config/</span>
+│   └── <span class="file">env.config.ts</span>       <span class="ann">← website URL, timeout, retry settings</span>
+│
+├── <span class="dir">pages/</span>                   <span class="ann">← "maps" of each website page</span>
+│   ├── <span class="file">BasePage.ts</span>         <span class="ann">← shared skills every page has</span>
+│   ├── <span class="file">HomePage.ts</span>         <span class="ann">← home page map</span>
+│   ├── <span class="file">LoginPage.ts</span>        <span class="ann">← login &amp; signup page map</span>
+│   ├── <span class="file">ProductsPage.ts</span>     <span class="ann">← products page map</span>
+│   ├── <span class="file">CartPage.ts</span>         <span class="ann">← shopping cart page map</span>
+│   ├── <span class="file">CheckoutPage.ts</span>     <span class="ann">← checkout &amp; payment page map</span>
+│   └── <span class="file">ContactUsPage.ts</span>    <span class="ann">← contact form page map</span>
+│
+├── <span class="dir">fixtures/</span>
+│   └── <span class="file">base.fixture.ts</span>     <span class="ann">← sets up page objects for every test</span>
+│
+├── <span class="dir">utils/</span>
+│   └── <span class="file">helpers.ts</span>          <span class="ann">← small helper functions</span>
+│
+├── <span class="dir">testdata/</span>
+│   ├── <span class="file">users.json</span>          <span class="ann">← user data (names, passwords, addresses)</span>
+│   └── <span class="file">contactUs.json</span>      <span class="ann">← contact form data</span>
+│
+└── <span class="dir">tests/</span>                   <span class="ann">← the actual test instructions</span>
+    ├── <span class="file">example.spec.ts</span>     <span class="ann">← demo test from Playwright's starter</span>
+    ├── <span class="file">auth.spec.ts</span>        <span class="ann">← register, login, logout tests</span>
+    ├── <span class="file">productSearch.spec.ts</span><span class="ann"> ← search &amp; network tests</span>
+    ├── <span class="file">cart.spec.ts</span>        <span class="ann">← add/remove cart items</span>
+    ├── <span class="file">checkout.spec.ts</span>    <span class="ann">← full checkout flow</span>
+    ├── <span class="file">contactUs.spec.ts</span>   <span class="ann">← contact form test</span>
+    ├── <span class="file">accessibility.spec.ts</span><span class="ann"> ← checks for disabled-user access</span>
+    └── <span class="file">visualRegression.spec.ts</span><span class="ann"> ← screenshot comparison</span></div>
+
+  <div class="analogy">
+    <div class="analogy-lamp">&#128204;</div>
+    <div>
+      <div class="analogy-label">The pattern</div>
+      <p>This framework follows the <strong>Page Object Model (POM)</strong>. Think of it like a GPS app: the <code>pages/</code> folder contains <em>maps</em> of each website page (where the buttons and fields are), and the <code>tests/</code> folder contains the <em>driving directions</em> (what to do on those pages). Keeping maps separate from directions means if the website changes, you only update the map &mdash; not every single test.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  SECTION 01 — package.json                                    -->
+<!-- ============================================================ -->
+<div class="divider"></div>
+<p class="group-label">Configuration Files</p>
+<p class="group-desc">These files set up the project before any test runs. They're the foundation.</p>
+
+<section class="file-section" id="package-json">
+  <div class="file-header">
+    <div class="file-icon config">{ }</div>
+    <h2>package.json</h2>
+  </div>
+  <div class="file-path">/ package.json</div>
+
+  <div class="file-purpose">
+    This is the project's <strong>identity card</strong>. It tells Node.js the project name, what tools (packages) it needs, and what shortcut commands you can run.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span>{
+<span class="ln"> 2</span>  <span class="str">"name"</span>: <span class="str">"playwright_agilent"</span>,
+<span class="ln"> 3</span>  <span class="str">"version"</span>: <span class="str">"1.0.0"</span>,
+<span class="ln"> 4</span>  <span class="str">"description"</span>: <span class="str">""</span>,
+<span class="ln"> 5</span>  <span class="str">"main"</span>: <span class="str">"index.js"</span>,</pre></div>
+  <div class="explain">
+    <p><strong>Line 2</strong> &mdash; <code>"name"</code>: The project's name, like a name tag. It says "Hi, I'm playwright_agilent."</p>
+    <p><strong>Line 3</strong> &mdash; <code>"version"</code>: The version number. <code>1.0.0</code> means this is the first official version.</p>
+    <p><strong>Line 4</strong> &mdash; <code>"description"</code>: A short description (empty here &mdash; you could add one like "E-commerce automation tests").</p>
+    <p><strong>Line 5</strong> &mdash; <code>"main"</code>: The default entry file. Not really used for test projects, but Node requires it.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 6</span>  <span class="str">"scripts"</span>: {
+<span class="ln"> 7</span>    <span class="str">"test"</span>: <span class="str">"npx playwright test"</span>,
+<span class="ln"> 8</span>    <span class="str">"test:chromium"</span>: <span class="str">"npx playwright test --project chromium"</span>,
+<span class="ln"> 9</span>    <span class="str">"test:first"</span>: <span class="str">"npx playwright test --grep @first"</span>,
+<span class="ln">10</span>    <span class="str">"test:local"</span>: <span class="str">"BASE_URL=http://localhost:4200 npx playwright test"</span>,
+<span class="ln">11</span>    <span class="str">"test:report"</span>: <span class="str">"npx playwright test &amp;&amp; npx playwright show-report"</span>,
+<span class="ln">12</span>    <span class="str">"test:UI"</span>: <span class="str">"npx playwright test --ui"</span>
+<span class="ln">13</span>  },</pre></div>
+  <div class="explain">
+    <p><strong>Scripts</strong> are shortcuts. Instead of typing the full command, you type a short name.</p>
+    <p><strong>Line 7</strong> &mdash; <code>"test"</code>: Run ALL tests. You type <code>npm test</code> and it runs <code>npx playwright test</code>.</p>
+    <p><strong>Line 8</strong> &mdash; <code>"test:chromium"</code>: Run tests only in Chrome. The <code>--project chromium</code> flag picks just one browser.</p>
+    <p><strong>Line 9</strong> &mdash; <code>"test:first"</code>: Run only tests tagged with <code>@first</code>. The <code>--grep</code> flag filters by tag name.</p>
+    <p><strong>Line 10</strong> &mdash; <code>"test:local"</code>: Run tests against a local dev server on your own computer instead of the live website.</p>
+    <p><strong>Line 11</strong> &mdash; <code>"test:report"</code>: Run tests, then automatically open the HTML report so you can see results in a browser.</p>
+    <p><strong>Line 12</strong> &mdash; <code>"test:UI"</code>: Open Playwright's visual UI mode &mdash; you see each test run step-by-step with screenshots.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">14</span>  <span class="str">"keywords"</span>: [],
+<span class="ln">15</span>  <span class="str">"author"</span>: <span class="str">""</span>,
+<span class="ln">16</span>  <span class="str">"license"</span>: <span class="str">"ISC"</span>,
+<span class="ln">17</span>  <span class="str">"type"</span>: <span class="str">"commonjs"</span>,</pre></div>
+  <div class="explain">
+    <p><strong>Lines 14&ndash;16</strong> &mdash; Standard metadata: keywords for search, author name, license type. Not critical for running tests.</p>
+    <p><strong>Line 17</strong> &mdash; <code>"type": "commonjs"</code>: Tells Node to use the <code>require()</code> style of imports (the older, widely-supported way) instead of the newer <code>import/export</code> style at runtime.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">18</span>  <span class="str">"devDependencies"</span>: {
+<span class="ln">19</span>    <span class="str">"@axe-core/playwright"</span>: <span class="str">"^4.14.0"</span>,
+<span class="ln">20</span>    <span class="str">"@playwright/test"</span>: <span class="str">"^1.65.0"</span>,
+<span class="ln">21</span>    <span class="str">"@types/node"</span>: <span class="str">"^26.6.6"</span>
+<span class="ln">22</span>  }
+<span class="ln">23</span>}</pre></div>
+  <div class="explain">
+    <p><strong>devDependencies</strong> = tools needed only during development/testing, not in a live product.</p>
+    <p><strong>Line 19</strong> &mdash; <code>@axe-core/playwright</code>: A tool that checks if a webpage is accessible to people with disabilities (screen readers, color blindness, etc.).</p>
+    <p><strong>Line 20</strong> &mdash; <code>@playwright/test</code>: Playwright itself &mdash; the robot that drives browsers! Version 1.65+.</p>
+    <p><strong>Line 21</strong> &mdash; <code>@types/node</code>: TypeScript type definitions for Node.js, so your editor knows what Node functions look like.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  SECTION 02 — tsconfig.json                                   -->
+<!-- ============================================================ -->
+<section class="file-section" id="tsconfig">
+  <div class="file-header">
+    <div class="file-icon config">TS</div>
+    <h2>tsconfig.json</h2>
+  </div>
+  <div class="file-path">/ tsconfig.json</div>
+
+  <div class="file-purpose">
+    This tells <strong>TypeScript</strong> (the programming language) how to behave. TypeScript is like JavaScript with a spell-checker &mdash; it catches mistakes before you run the code.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span>{
+<span class="ln"> 2</span>  <span class="str">"compilerOptions"</span>: {
+<span class="ln"> 3</span>    <span class="str">"target"</span>: <span class="str">"ES2020"</span>,
+<span class="ln"> 4</span>    <span class="str">"module"</span>: <span class="str">"commonjs"</span>,
+<span class="ln"> 5</span>    <span class="str">"strict"</span>: <span class="kw">true</span>,
+<span class="ln"> 6</span>    <span class="str">"esModuleInterop"</span>: <span class="kw">true</span>,
+<span class="ln"> 7</span>    <span class="str">"resolveJsonModule"</span>: <span class="kw">true</span>,
+<span class="ln"> 8</span>    <span class="str">"types"</span>: [<span class="str">"node"</span>]
+<span class="ln"> 9</span>  },
+<span class="ln">10</span>  <span class="str">"include"</span>: [
+<span class="ln">11</span>    <span class="str">"tests/**/*.ts"</span>,
+<span class="ln">12</span>    <span class="str">"pages/**/*.ts"</span>,
+<span class="ln">13</span>    <span class="str">"fixtures/**/*.ts"</span>,
+<span class="ln">14</span>    <span class="str">"utils/**/*.ts"</span>,
+<span class="ln">15</span>    <span class="str">"config/**/*.ts"</span>
+<span class="ln">16</span>  ]
+<span class="ln">17</span>}</pre></div>
+  <div class="explain">
+    <p><strong>Line 3</strong> &mdash; <code>"target": "ES2020"</code>: Convert TypeScript into JavaScript that matches the 2020 standard. Modern enough to use features like <code>async/await</code>.</p>
+    <p><strong>Line 4</strong> &mdash; <code>"module": "commonjs"</code>: Use <code>require()</code>-style imports when the code runs.</p>
+    <p><strong>Line 5</strong> &mdash; <code>"strict": true</code>: Turn on ALL spell-checking rules. This catches bugs like forgetting to handle <code>null</code> values.</p>
+    <p><strong>Line 6</strong> &mdash; <code>"esModuleInterop": true</code>: Makes it easier to import libraries that were written in different styles. Without this, some <code>import</code> statements would fail.</p>
+    <p><strong>Line 7</strong> &mdash; <code>"resolveJsonModule": true</code>: Lets you <code>import</code> JSON files directly into your TypeScript code (like the test data files).</p>
+    <p><strong>Line 8</strong> &mdash; <code>"types": ["node"]</code>: Include Node.js type definitions so TypeScript knows about things like <code>process.env</code>.</p>
+    <p><strong>Lines 10&ndash;16</strong> &mdash; <code>"include"</code>: Tells TypeScript which folders to check. The <code>**/*.ts</code> pattern means "all <code>.ts</code> files in all subfolders." It scans tests, pages, fixtures, utils, and config.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  SECTION 03 — env.config.ts                                   -->
+<!-- ============================================================ -->
+<section class="file-section" id="env-config">
+  <div class="file-header">
+    <div class="file-icon config">Env</div>
+    <h2>env.config.ts</h2>
+  </div>
+  <div class="file-path">config / env.config.ts</div>
+
+  <div class="file-purpose">
+    A tiny file that stores <strong>environment settings</strong> &mdash; the website address, how long to wait, and how many times to retry a failed test.
+  </div>
+
+  <div class="code-block"><pre><span class="ln">1</span><span class="kw">export const</span> envConfig = {
+<span class="ln">2</span>  baseUrl: <span class="str">'https://automationexercise.com'</span>,
+<span class="ln">3</span>  timeout: <span class="str">30000</span>,
+<span class="ln">4</span>  retries: <span class="str">0</span>,
+<span class="ln">5</span>};</pre></div>
+  <div class="explain">
+    <p><strong>Line 1</strong> &mdash; <code>export const envConfig</code>: Create a settings object and <strong>export</strong> it so other files can import and use it.</p>
+    <p><strong>Line 2</strong> &mdash; <code>baseUrl</code>: The website we're testing. Every time a test goes to <code>/login</code>, Playwright adds this in front, making it <code>https://automationexercise.com/login</code>.</p>
+    <p><strong>Line 3</strong> &mdash; <code>timeout: 30000</code>: Each test gets 30,000 milliseconds (30 seconds) to finish. If it takes longer, Playwright marks it as failed.</p>
+    <p><strong>Line 4</strong> &mdash; <code>retries: 0</code>: Don't retry failed tests when running locally. (In CI, the main config overrides this to 2.)</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-lamp">&#128161;</div>
+    <div>
+      <div class="analogy-label">Why a separate config file?</div>
+      <p>Imagine changing the website URL. Instead of searching through 20 files, you change it in <em>one place</em> here, and every file that imports <code>envConfig</code> automatically gets the new value.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  SECTION 04 — playwright.config.ts                            -->
+<!-- ============================================================ -->
+<section class="file-section" id="playwright-config">
+  <div class="file-header">
+    <div class="file-icon config">PW</div>
+    <h2>playwright.config.ts</h2>
+  </div>
+  <div class="file-path">/ playwright.config.ts</div>
+
+  <div class="file-purpose">
+    The <strong>master control panel</strong> for Playwright. It tells the robot which browsers to use, where the tests are, what to do when a test fails, and more.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span><span class="kw">import</span> { defineConfig, devices } <span class="kw">from</span> <span class="str">'@playwright/test'</span>;
+<span class="ln"> 2</span><span class="kw">import</span> { envConfig } <span class="kw">from</span> <span class="str">'./config/env.config'</span>;</pre></div>
+  <div class="explain">
+    <p><strong>Line 1</strong> &mdash; Import two things from Playwright: <code>defineConfig</code> (a function that creates a proper config) and <code>devices</code> (a list of pre-made browser profiles like "Desktop Chrome").</p>
+    <p><strong>Line 2</strong> &mdash; Import your environment settings from the config file we just learned about.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 4</span><span class="kw">export default</span> <span class="fn">defineConfig</span>({
+<span class="ln"> 5</span>  testDir: <span class="str">'./tests'</span>,
+<span class="ln"> 6</span>  fullyParallel: <span class="kw">true</span>,
+<span class="ln"> 7</span>  forbidOnly: !!process.env.CI,
+<span class="ln"> 8</span>  retries: process.env.CI ? <span class="str">2</span> : envConfig.retries,
+<span class="ln"> 9</span>  workers: process.env.CI ? <span class="str">1</span> : <span class="kw">undefined</span>,
+<span class="ln">10</span>  reporter: [[<span class="str">'html'</span>, { outputFolder: <span class="str">'reports'</span> }]],
+<span class="ln">11</span>  timeout: envConfig.timeout,</pre></div>
+  <div class="explain">
+    <p><strong>Line 5</strong> &mdash; <code>testDir: './tests'</code>: "Look in the <code>tests</code> folder for test files." Playwright will find all <code>.spec.ts</code> files there.</p>
+    <p><strong>Line 6</strong> &mdash; <code>fullyParallel: true</code>: Run tests at the same time, not one after another. This makes the whole suite finish faster.</p>
+    <p><strong>Line 7</strong> &mdash; <code>forbidOnly: !!process.env.CI</code>: If running in CI (a build server like GitHub Actions), <em>block</em> any test marked with <code>.only</code>. Why? Because <code>.only</code> means "run just this one test" &mdash; a developer might forget to remove it, and CI would accidentally skip all other tests.</p>
+    <p><strong>Line 8</strong> &mdash; <code>retries</code>: In CI, retry a failed test 2 times (sometimes tests fail due to network flakiness). Locally, use whatever <code>envConfig</code> says (which is 0 &mdash; no retries).</p>
+    <p><strong>Line 9</strong> &mdash; <code>workers</code>: In CI, use 1 worker (run tests one at a time for stability). Locally, <code>undefined</code> lets Playwright decide based on your CPU cores.</p>
+    <p><strong>Line 10</strong> &mdash; <code>reporter</code>: Generate an HTML report in the <code>reports</code> folder. After tests run, you can open this report in a browser to see green/red results.</p>
+    <p><strong>Line 11</strong> &mdash; <code>timeout</code>: Use the 30-second timeout from <code>envConfig</code>.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">13</span>  use: {
+<span class="ln">14</span>    baseURL: envConfig.baseUrl,
+<span class="ln">15</span>    trace: <span class="str">'on-first-retry'</span>,
+<span class="ln">16</span>    screenshot: <span class="str">'only-on-failure'</span>,
+<span class="ln">17</span>    video: <span class="str">'retain-on-failure'</span>,
+<span class="ln">18</span>  },</pre></div>
+  <div class="explain">
+    <p><strong>Line 14</strong> &mdash; <code>baseURL</code>: The root address of the website. Now every <code>page.goto('/login')</code> automatically becomes <code>https://automationexercise.com/login</code>.</p>
+    <p><strong>Line 15</strong> &mdash; <code>trace: 'on-first-retry'</code>: When a test fails and retries for the first time, capture a <strong>trace</strong> &mdash; a recording of every click, navigation, and network request. You can replay this trace to debug what went wrong.</p>
+    <p><strong>Line 16</strong> &mdash; <code>screenshot: 'only-on-failure'</code>: Take a screenshot only when a test fails. This saves disk space while still giving you a picture of the broken state.</p>
+    <p><strong>Line 17</strong> &mdash; <code>video: 'retain-on-failure'</code>: Record video of every test, but only <em>keep</em> the videos from failed tests. Passed-test videos are thrown away.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">20</span>  projects: [
+<span class="ln">21</span>    {
+<span class="ln">22</span>      name: <span class="str">'chromium'</span>,
+<span class="ln">23</span>      use: { ...devices[<span class="str">'Desktop Chrome'</span>] },
+<span class="ln">24</span>    },
+<span class="ln">25</span>    {
+<span class="ln">26</span>      name: <span class="str">'firefox'</span>,
+<span class="ln">27</span>      use: { ...devices[<span class="str">'Desktop Firefox'</span>] },
+<span class="ln">28</span>    },
+<span class="ln">29</span>    {
+<span class="ln">30</span>      name: <span class="str">'webkit'</span>,
+<span class="ln">31</span>      use: { ...devices[<span class="str">'Desktop Safari'</span>] },
+<span class="ln">32</span>    },
+<span class="ln">33</span>  ],</pre></div>
+  <div class="explain">
+    <p><strong>Lines 20&ndash;33</strong> &mdash; <code>projects</code>: Run every test in <strong>three different browsers</strong>:</p>
+    <p>1. <strong>Chromium</strong> (the engine behind Google Chrome)</p>
+    <p>2. <strong>Firefox</strong> (Mozilla's browser)</p>
+    <p>3. <strong>WebKit</strong> (the engine behind Apple Safari)</p>
+    <p>The <code>...devices['Desktop Chrome']</code> syntax "spreads" Playwright's built-in settings for a desktop Chrome &mdash; things like screen size, user-agent string, etc.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-lamp">&#128161;</div>
+    <div>
+      <div class="analogy-label">Why three browsers?</div>
+      <p>Different browsers can display the same website slightly differently. Testing in all three catches bugs that only appear in one browser. It's like proofreading your essay in three different fonts to catch hidden formatting problems.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  SECTION 05 — helpers.ts                                      -->
+<!-- ============================================================ -->
+<section class="file-section" id="helpers">
+  <div class="file-header">
+    <div class="file-icon util">fn</div>
+    <h2>helpers.ts</h2>
+  </div>
+  <div class="file-path">utils / helpers.ts</div>
+
+  <div class="file-purpose">
+    A small utility file with <strong>reusable helper functions</strong> &mdash; like a toolbox with tools you use in many tests.
+  </div>
+
+  <div class="code-block"><pre><span class="ln">1</span><span class="kw">export function</span> <span class="fn">generateRandomEmail</span>(): <span class="tp">string</span> {
+<span class="ln">2</span>  <span class="kw">const</span> timestamp = Date.<span class="fn">now</span>();
+<span class="ln">3</span>  <span class="kw">return</span> <span class="str">`testuser_${timestamp}@test.com`</span>;
+<span class="ln">4</span>}</pre></div>
+  <div class="explain">
+    <p><strong>Line 1</strong> &mdash; Creates a function called <code>generateRandomEmail</code> and exports it. The <code>: string</code> part is TypeScript saying "this function gives back text."</p>
+    <p><strong>Line 2</strong> &mdash; <code>Date.now()</code> gets the current time as a big number (milliseconds since Jan 1, 1970). Example: <code>1700000000000</code>.</p>
+    <p><strong>Line 3</strong> &mdash; Creates an email like <code>testuser_1700000000000@test.com</code>. Because the timestamp is always different, the email is always unique &mdash; important because the website won't let you register the same email twice.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  PAGE OBJECT MODEL FILES                                      -->
+<!-- ============================================================ -->
+<div class="divider"></div>
+<p class="group-label">Page Objects</p>
+<p class="group-desc">Each file below is a "map" of one page on the website. It lists all the important buttons, fields, and links, and provides functions to interact with them.</p>
+
+<!-- SECTION 06 — BasePage.ts -->
+<section class="file-section" id="base-page">
+  <div class="file-header">
+    <div class="file-icon page">B</div>
+    <h2>BasePage.ts</h2>
+  </div>
+  <div class="file-path">pages / BasePage.ts</div>
+
+  <div class="file-purpose">
+    The <strong>parent class</strong> that every other page inherits from. It contains shared abilities that all pages need.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span><span class="kw">import</span> { <span class="tp">Page</span> } <span class="kw">from</span> <span class="str">'@playwright/test'</span>;
+<span class="ln"> 2</span>
+<span class="ln"> 3</span><span class="kw">export class</span> <span class="tp">BasePage</span> {
+<span class="ln"> 4</span>  <span class="kw">constructor</span>(<span class="kw">protected</span> page: <span class="tp">Page</span>) {}
+<span class="ln"> 5</span>
+<span class="ln"> 6</span>  <span class="kw">async</span> <span class="fn">navigateTo</span>(path: <span class="tp">string</span>) {
+<span class="ln"> 7</span>    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">goto</span>(path);
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>
+<span class="ln">10</span>  <span class="kw">async</span> <span class="fn">getPageTitle</span>(): <span class="tp">Promise</span>&lt;<span class="tp">string</span>&gt; {
+<span class="ln">11</span>    <span class="kw">return</span> <span class="kw">this</span>.page.<span class="fn">title</span>();
+<span class="ln">12</span>  }
+<span class="ln">13</span>}</pre></div>
+  <div class="explain">
+    <p><strong>Line 1</strong> &mdash; Import <code>Page</code> from Playwright. <code>Page</code> represents a single browser tab.</p>
+    <p><strong>Line 3</strong> &mdash; Create a <strong>class</strong> called <code>BasePage</code>. A class is like a blueprint for building objects.</p>
+    <p><strong>Line 4</strong> &mdash; The <strong>constructor</strong> runs when you create a new BasePage. It takes a <code>page</code> (browser tab) and saves it. The <code>protected</code> keyword means child classes (like HomePage) can also use <code>this.page</code>.</p>
+    <p><strong>Lines 6&ndash;8</strong> &mdash; <code>navigateTo(path)</code>: Go to a URL. <code>async</code> and <code>await</code> mean "this takes time (loading a page), so wait for it to finish." When you call <code>navigateTo('/login')</code>, Playwright opens <code>https://automationexercise.com/login</code>.</p>
+    <p><strong>Lines 10&ndash;12</strong> &mdash; <code>getPageTitle()</code>: Read the page's title (the text that shows in the browser tab). Returns a <code>Promise&lt;string&gt;</code> &mdash; a promise that eventually gives you text.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-lamp">&#128161;</div>
+    <div>
+      <div class="analogy-label">Inheritance analogy</div>
+      <p>Think of <code>BasePage</code> as a basic phone. It can make calls and send texts. <code>HomePage</code>, <code>LoginPage</code>, etc. are like smartphones &mdash; they can do everything the basic phone does, PLUS extra things like taking photos and running apps.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 07 — HomePage.ts -->
+<section class="file-section" id="home-page">
+  <div class="file-header">
+    <div class="file-icon page">H</div>
+    <h2>HomePage.ts</h2>
+  </div>
+  <div class="file-path">pages / HomePage.ts</div>
+
+  <div class="file-purpose">
+    Maps the <strong>home page</strong> of the website &mdash; the header navigation, login/logout links, the product grid, and links to Cart and Contact Us.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span><span class="kw">import</span> { <span class="tp">Page</span>, <span class="tp">Locator</span> } <span class="kw">from</span> <span class="str">'@playwright/test'</span>;
+<span class="ln"> 2</span><span class="kw">import</span> { <span class="tp">BasePage</span> } <span class="kw">from</span> <span class="str">'./BasePage'</span>;</pre></div>
+  <div class="explain">
+    <p><strong>Line 1</strong> &mdash; Import <code>Page</code> (browser tab) and <code>Locator</code> (a pointer to an element on the page, like "the login button"). A <code>Locator</code> is like a GPS pin on a map &mdash; it points to something.</p>
+    <p><strong>Line 2</strong> &mdash; Import <code>BasePage</code> so we can inherit from it.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 4</span><span class="kw">export class</span> <span class="tp">HomePage</span> <span class="kw">extends</span> <span class="tp">BasePage</span> {
+<span class="ln"> 5</span>  <span class="kw">readonly</span> signupLoginLink: <span class="tp">Locator</span>;
+<span class="ln"> 6</span>  <span class="kw">readonly</span> loggedInUser: <span class="tp">Locator</span>;
+<span class="ln"> 7</span>  <span class="kw">readonly</span> logoutLink: <span class="tp">Locator</span>;
+<span class="ln"> 8</span>  <span class="kw">readonly</span> productCards: <span class="tp">Locator</span>;
+<span class="ln"> 9</span>  <span class="kw">readonly</span> cartLink: <span class="tp">Locator</span>;
+<span class="ln">10</span>  <span class="kw">readonly</span> contactUsLink: <span class="tp">Locator</span>;</pre></div>
+  <div class="explain">
+    <p><strong>Line 4</strong> &mdash; <code>extends BasePage</code>: HomePage <em>inherits</em> from BasePage, so it gets <code>navigateTo()</code> and <code>getPageTitle()</code> for free.</p>
+    <p><strong>Lines 5&ndash;10</strong> &mdash; Declare six locators (GPS pins). <code>readonly</code> means once set, they can't be changed accidentally. Each one points to a specific element on the home page.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">12</span>  <span class="kw">constructor</span>(page: <span class="tp">Page</span>) {
+<span class="ln">13</span>    <span class="fn">super</span>(page);
+<span class="ln">14</span>    <span class="kw">this</span>.signupLoginLink = page.<span class="fn">locator</span>(<span class="str">'a[href="/login"]'</span>);
+<span class="ln">15</span>    <span class="kw">this</span>.loggedInUser = page.<span class="fn">locator</span>(<span class="str">'a:has-text("Logged in as")'</span>);
+<span class="ln">16</span>    <span class="kw">this</span>.logoutLink = page.<span class="fn">locator</span>(<span class="str">'a[href="/logout"]'</span>);
+<span class="ln">17</span>    <span class="kw">this</span>.productCards = page.<span class="fn">locator</span>(<span class="str">'.features_items .col-sm-4'</span>);
+<span class="ln">18</span>    <span class="kw">this</span>.cartLink = page.<span class="fn">locator</span>(<span class="str">'a[href="/view_cart"]'</span>).<span class="fn">first</span>();
+<span class="ln">19</span>    <span class="kw">this</span>.contactUsLink = page.<span class="fn">locator</span>(<span class="str">'a[href="/contact_us"]'</span>);
+<span class="ln">20</span>  }</pre></div>
+  <div class="explain">
+    <p><strong>Line 13</strong> &mdash; <code>super(page)</code>: Call the parent's (BasePage's) constructor first, handing it the page.</p>
+    <p><strong>Line 14</strong> &mdash; Find any <code>&lt;a&gt;</code> tag whose <code>href</code> is <code>/login</code>. That's the "Signup / Login" link in the header.</p>
+    <p><strong>Line 15</strong> &mdash; Find a link that contains the text "Logged in as". This only appears <em>after</em> you log in.</p>
+    <p><strong>Line 16</strong> &mdash; Find the logout link (goes to <code>/logout</code>).</p>
+    <p><strong>Line 17</strong> &mdash; Find product cards &mdash; CSS selector <code>.features_items .col-sm-4</code> matches each product card on the home page.</p>
+    <p><strong>Line 18</strong> &mdash; Find the "Cart" link. <code>.first()</code> is needed because there might be multiple matching links (header and footer) &mdash; we want the first one.</p>
+    <p><strong>Line 19</strong> &mdash; Find the "Contact Us" link.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">22</span>  <span class="kw">async</span> <span class="fn">navigate</span>() {
+<span class="ln">23</span>    <span class="kw">await</span> <span class="kw">this</span>.<span class="fn">navigateTo</span>(<span class="str">'/'</span>);
+<span class="ln">24</span>  }
+<span class="ln">25</span>
+<span class="ln">26</span>  <span class="kw">async</span> <span class="fn">getLoggedInUsername</span>(): <span class="tp">Promise</span>&lt;<span class="tp">string</span>&gt; {
+<span class="ln">27</span>    <span class="kw">const</span> text = <span class="kw">await</span> <span class="kw">this</span>.loggedInUser.<span class="fn">innerText</span>();
+<span class="ln">28</span>    <span class="kw">return</span> text.<span class="fn">replace</span>(<span class="str">'Logged in as '</span>, <span class="str">''</span>).<span class="fn">trim</span>();
+<span class="ln">29</span>  }
+<span class="ln">30</span>
+<span class="ln">31</span>  <span class="kw">async</span> <span class="fn">clickSignupLogin</span>() {
+<span class="ln">32</span>    <span class="kw">await</span> <span class="kw">this</span>.signupLoginLink.<span class="fn">click</span>();
+<span class="ln">33</span>  }
+<span class="ln">34</span>
+<span class="ln">35</span>  <span class="kw">async</span> <span class="fn">clickLogout</span>() {
+<span class="ln">36</span>    <span class="kw">await</span> <span class="kw">this</span>.logoutLink.<span class="fn">click</span>();
+<span class="ln">37</span>  }
+<span class="ln">38</span>
+<span class="ln">39</span>  <span class="kw">async</span> <span class="fn">clickCart</span>() {
+<span class="ln">40</span>    <span class="kw">await</span> <span class="kw">this</span>.cartLink.<span class="fn">click</span>();
+<span class="ln">41</span>  }
+<span class="ln">42</span>}</pre></div>
+  <div class="explain">
+    <p><strong>Lines 22&ndash;24</strong> &mdash; <code>navigate()</code>: Go to the home page (<code>/</code> = root).</p>
+    <p><strong>Lines 26&ndash;29</strong> &mdash; <code>getLoggedInUsername()</code>: Read the "Logged in as TestUser" text, then strip out the "Logged in as " prefix to return just the username ("TestUser").</p>
+    <p><strong>Lines 31&ndash;41</strong> &mdash; Simple click functions: click the signup/login link, the logout link, or the cart link. Each one just calls <code>.click()</code> on the locator.</p>
+  </div>
+</section>
+
+<!-- SECTION 08 — LoginPage.ts -->
+<section class="file-section" id="login-page">
+  <div class="file-header">
+    <div class="file-icon page">L</div>
+    <h2>LoginPage.ts</h2>
+  </div>
+  <div class="file-path">pages / LoginPage.ts</div>
+
+  <div class="file-purpose">
+    Maps the <strong>login/signup page</strong> &mdash; the login form, signup form, and the full registration form that appears after signing up.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 4</span><span class="kw">export class</span> <span class="tp">LoginPage</span> <span class="kw">extends</span> <span class="tp">BasePage</span> {
+<span class="ln"> 5</span>  <span class="kw">readonly</span> loginEmail: <span class="tp">Locator</span>;
+<span class="ln"> 6</span>  <span class="kw">readonly</span> loginPassword: <span class="tp">Locator</span>;
+<span class="ln"> 7</span>  <span class="kw">readonly</span> loginButton: <span class="tp">Locator</span>;
+<span class="ln"> 8</span>  <span class="kw">readonly</span> loginErrorMessage: <span class="tp">Locator</span>;
+<span class="ln"> 9</span>
+<span class="ln">10</span>  <span class="kw">readonly</span> signupName: <span class="tp">Locator</span>;
+<span class="ln">11</span>  <span class="kw">readonly</span> signupEmail: <span class="tp">Locator</span>;
+<span class="ln">12</span>  <span class="kw">readonly</span> signupButton: <span class="tp">Locator</span>;</pre></div>
+  <div class="explain">
+    <p><strong>Lines 5&ndash;8</strong> &mdash; Four locators for the <strong>login section</strong>: the email field, password field, login button, and the error message that appears when credentials are wrong.</p>
+    <p><strong>Lines 10&ndash;12</strong> &mdash; Three locators for the <strong>signup section</strong>: name field, email field, and signup button.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">14</span>  <span class="kw">constructor</span>(page: <span class="tp">Page</span>) {
+<span class="ln">15</span>    <span class="fn">super</span>(page);
+<span class="ln">16</span>    <span class="kw">this</span>.loginEmail = page.<span class="fn">locator</span>(<span class="str">'[data-qa="login-email"]'</span>);
+<span class="ln">17</span>    <span class="kw">this</span>.loginPassword = page.<span class="fn">locator</span>(<span class="str">'[data-qa="login-password"]'</span>);
+<span class="ln">18</span>    <span class="kw">this</span>.loginButton = page.<span class="fn">locator</span>(<span class="str">'[data-qa="login-button"]'</span>);
+<span class="ln">19</span>    <span class="kw">this</span>.loginErrorMessage = page.<span class="fn">locator</span>(<span class="str">'p:has-text("Your email or password is incorrect!")'</span>);
+<span class="ln">20</span>    <span class="kw">this</span>.signupName = page.<span class="fn">locator</span>(<span class="str">'[data-qa="signup-name"]'</span>);
+<span class="ln">21</span>    <span class="kw">this</span>.signupEmail = page.<span class="fn">locator</span>(<span class="str">'[data-qa="signup-email"]'</span>);
+<span class="ln">22</span>    <span class="kw">this</span>.signupButton = page.<span class="fn">locator</span>(<span class="str">'[data-qa="signup-button"]'</span>);
+<span class="ln">23</span>  }</pre></div>
+  <div class="explain">
+    <p>Each locator uses <code>[data-qa="..."]</code> selectors &mdash; special attributes the website developers put on elements specifically for testing. These are more reliable than CSS classes because developers are less likely to change them.</p>
+    <p><strong>Line 19</strong> &mdash; Finds a <code>&lt;p&gt;</code> tag that contains the error text. This element only appears when you enter wrong credentials.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">30</span>  <span class="kw">async</span> <span class="fn">login</span>(email: <span class="tp">string</span>, password: <span class="tp">string</span>) {
+<span class="ln">31</span>    <span class="kw">await</span> <span class="kw">this</span>.loginEmail.<span class="fn">fill</span>(email);
+<span class="ln">32</span>    <span class="kw">await</span> <span class="kw">this</span>.loginPassword.<span class="fn">fill</span>(password);
+<span class="ln">33</span>    <span class="kw">await</span> <span class="kw">this</span>.loginButton.<span class="fn">click</span>();
+<span class="ln">34</span>  }
+<span class="ln">35</span>
+<span class="ln">36</span>  <span class="kw">async</span> <span class="fn">signup</span>(name: <span class="tp">string</span>, email: <span class="tp">string</span>) {
+<span class="ln">37</span>    <span class="kw">await</span> <span class="kw">this</span>.signupName.<span class="fn">fill</span>(name);
+<span class="ln">38</span>    <span class="kw">await</span> <span class="kw">this</span>.signupEmail.<span class="fn">fill</span>(email);
+<span class="ln">39</span>    <span class="kw">await</span> <span class="kw">this</span>.signupButton.<span class="fn">click</span>();
+<span class="ln">40</span>  }</pre></div>
+  <div class="explain">
+    <p><strong>login()</strong> &mdash; Three steps: type email, type password, click login. <code>.fill()</code> clears the field first, then types the text.</p>
+    <p><strong>signup()</strong> &mdash; Same idea: type name, type email, click signup. This takes you to the registration form.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">42</span>  <span class="kw">async</span> <span class="fn">fillRegistrationForm</span>(userData: {
+<span class="ln">43</span>    password: <span class="tp">string</span>; firstName: <span class="tp">string</span>; lastName: <span class="tp">string</span>;
+<span class="ln">44</span>    company: <span class="tp">string</span>; address: <span class="tp">string</span>; address2: <span class="tp">string</span>;
+<span class="ln">45</span>    country: <span class="tp">string</span>; state: <span class="tp">string</span>; city: <span class="tp">string</span>;
+<span class="ln">46</span>    zipcode: <span class="tp">string</span>; mobileNumber: <span class="tp">string</span>;
+<span class="ln">47</span>  }) {
+<span class="ln">48</span>    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">locator</span>(<span class="str">'#id_gender1'</span>).<span class="fn">check</span>();
+<span class="ln">49</span>    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">locator</span>(<span class="str">'[data-qa="password"]'</span>).<span class="fn">fill</span>(userData.password);
+<span class="ln">50</span>    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">locator</span>(<span class="str">'[data-qa="days"]'</span>).<span class="fn">selectOption</span>(<span class="str">'10'</span>);
+<span class="ln">51</span>    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">locator</span>(<span class="str">'[data-qa="months"]'</span>).<span class="fn">selectOption</span>(<span class="str">'June'</span>);
+<span class="ln">52</span>    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">locator</span>(<span class="str">'[data-qa="years"]'</span>).<span class="fn">selectOption</span>(<span class="str">'1990'</span>);
+<span class="ln">53</span>    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">locator</span>(<span class="str">'[data-qa="first_name"]'</span>).<span class="fn">fill</span>(userData.firstName);
+<span class="ln">54</span>    <span class="cm">...more fields follow the same pattern...</span>
+<span class="ln">63</span>    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">locator</span>(<span class="str">'[data-qa="create-account"]'</span>).<span class="fn">click</span>();
+<span class="ln">64</span>  }</pre></div>
+  <div class="explain">
+    <p><strong>fillRegistrationForm()</strong> takes a <code>userData</code> object with all the registration details and fills every field:</p>
+    <p>&bull; <code>.check()</code> &mdash; Ticks a radio button (gender selection).</p>
+    <p>&bull; <code>.fill()</code> &mdash; Types text into input fields (password, name, address, etc.).</p>
+    <p>&bull; <code>.selectOption()</code> &mdash; Picks a value from a dropdown (day, month, year, country).</p>
+    <p>&bull; The last line clicks <code>"create-account"</code> to submit the form.</p>
+  </div>
+</section>
+
+<!-- SECTION 09 — ProductsPage.ts -->
+<section class="file-section" id="products-page">
+  <div class="file-header">
+    <div class="file-icon page">P</div>
+    <h2>ProductsPage.ts</h2>
+  </div>
+  <div class="file-path">pages / ProductsPage.ts</div>
+
+  <div class="file-purpose">
+    Maps the <strong>products listing page</strong> &mdash; the search bar, product cards, and "Add to Cart" buttons.
+  </div>
+
+  <div class="code-block"><pre><span class="ln">10</span>    <span class="kw">this</span>.searchInput = page.<span class="fn">locator</span>(<span class="str">'#search_product'</span>);
+<span class="ln">11</span>    <span class="kw">this</span>.searchButton = page.<span class="fn">locator</span>(<span class="str">'#submit_search'</span>);
+<span class="ln">12</span>    <span class="kw">this</span>.productList = page.<span class="fn">locator</span>(<span class="str">'.features_items .productinfo'</span>);
+<span class="ln">13</span>    <span class="kw">this</span>.searchedProductsTitle = page.<span class="fn">locator</span>(<span class="str">'h2:has-text("Searched Products")'</span>);</pre></div>
+  <div class="explain">
+    <p><strong>Line 10</strong> &mdash; The search input box (found by its HTML id <code>#search_product</code>).</p>
+    <p><strong>Line 11</strong> &mdash; The magnifying glass / search button.</p>
+    <p><strong>Line 12</strong> &mdash; All product info cards on the page. <code>.productinfo</code> inside <code>.features_items</code> matches each one.</p>
+    <p><strong>Line 13</strong> &mdash; The heading "Searched Products" that appears after you search.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">22</span>  <span class="kw">async</span> <span class="fn">searchProduct</span>(term: <span class="tp">string</span>) {
+<span class="ln">23</span>    <span class="kw">await</span> <span class="kw">this</span>.searchInput.<span class="fn">fill</span>(term);
+<span class="ln">24</span>    <span class="kw">await</span> <span class="kw">this</span>.searchButton.<span class="fn">click</span>();
+<span class="ln">25</span>  }
+<span class="ln">26</span>
+<span class="ln">27</span>  <span class="kw">async</span> <span class="fn">getProductCount</span>(): <span class="tp">Promise</span>&lt;<span class="tp">number</span>&gt; {
+<span class="ln">28</span>    <span class="kw">return</span> <span class="kw">this</span>.productList.<span class="fn">count</span>();
+<span class="ln">29</span>  }
+<span class="ln">30</span>
+<span class="ln">31</span>  <span class="kw">async</span> <span class="fn">addProductToCart</span>(index: <span class="tp">number</span>) {
+<span class="ln">32</span>    <span class="kw">const</span> addToCartButtons = <span class="kw">this</span>.page.<span class="fn">locator</span>(<span class="str">'.features_items .productinfo .add-to-cart'</span>);
+<span class="ln">33</span>    <span class="kw">await</span> addToCartButtons.<span class="fn">nth</span>(index).<span class="fn">scrollIntoViewIfNeeded</span>();
+<span class="ln">34</span>    <span class="kw">await</span> addToCartButtons.<span class="fn">nth</span>(index).<span class="fn">click</span>();
+<span class="ln">35</span>  }</pre></div>
+  <div class="explain">
+    <p><strong>searchProduct()</strong> &mdash; Types a search word into the search box and clicks search.</p>
+    <p><strong>getProductCount()</strong> &mdash; Counts how many products are showing. <code>.count()</code> returns the number of matched elements.</p>
+    <p><strong>addProductToCart(index)</strong> &mdash; <code>index</code> is which product (0 = first, 1 = second). <code>.nth(index)</code> picks that specific "Add to Cart" button. <code>.scrollIntoViewIfNeeded()</code> scrolls down if the button is below the visible area, then <code>.click()</code> clicks it.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">37</span>  <span class="kw">async</span> <span class="fn">clickContinueShopping</span>() {
+<span class="ln">38</span>    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">locator</span>(<span class="str">'button:has-text("Continue Shopping")'</span>).<span class="fn">click</span>();
+<span class="ln">39</span>  }
+<span class="ln">40</span>
+<span class="ln">41</span>  <span class="kw">async</span> <span class="fn">clickViewCartInModal</span>() {
+<span class="ln">42</span>    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">locator</span>(<span class="str">'#cartModal a[href="/view_cart"]'</span>).<span class="fn">click</span>();
+<span class="ln">43</span>  }</pre></div>
+  <div class="explain">
+    <p>After adding a product, a popup (modal) appears asking "Continue Shopping?" or "View Cart."</p>
+    <p><strong>clickContinueShopping()</strong> &mdash; Clicks the button to close the modal and keep shopping.</p>
+    <p><strong>clickViewCartInModal()</strong> &mdash; Clicks the "View Cart" link inside the modal to go to the cart page.</p>
+  </div>
+</section>
+
+<!-- SECTION 10 — CartPage.ts -->
+<section class="file-section" id="cart-page">
+  <div class="file-header">
+    <div class="file-icon page">C</div>
+    <h2>CartPage.ts</h2>
+  </div>
+  <div class="file-path">pages / CartPage.ts</div>
+
+  <div class="file-purpose">
+    Maps the <strong>shopping cart page</strong> &mdash; the table of items, remove buttons, and "Proceed to Checkout" button.
+  </div>
+
+  <div class="code-block"><pre><span class="ln">10</span>    <span class="kw">this</span>.cartTable = page.<span class="fn">locator</span>(<span class="str">'#cart_info_table'</span>);
+<span class="ln">11</span>    <span class="kw">this</span>.cartRows = page.<span class="fn">locator</span>(<span class="str">'#cart_info_table tbody tr'</span>);
+<span class="ln">12</span>    <span class="kw">this</span>.proceedToCheckout = page.<span class="fn">locator</span>(<span class="str">'.check_out'</span>);
+<span class="ln">13</span>    <span class="kw">this</span>.emptyCartMessage = page.<span class="fn">locator</span>(<span class="str">'#empty_cart'</span>);</pre></div>
+  <div class="explain">
+    <p><strong>Line 10</strong> &mdash; The entire cart table.</p>
+    <p><strong>Line 11</strong> &mdash; Each row (<code>&lt;tr&gt;</code>) in the table body = one product in the cart.</p>
+    <p><strong>Line 12</strong> &mdash; The "Proceed to Checkout" button.</p>
+    <p><strong>Line 13</strong> &mdash; The "Cart is empty!" message that appears when everything is removed.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">22</span>  <span class="kw">async</span> <span class="fn">getCartItemCount</span>(): <span class="tp">Promise</span>&lt;<span class="tp">number</span>&gt; {
+<span class="ln">23</span>    <span class="kw">return</span> <span class="kw">this</span>.cartRows.<span class="fn">count</span>();
+<span class="ln">24</span>  }
+<span class="ln">25</span>
+<span class="ln">26</span>  <span class="kw">async</span> <span class="fn">removeProduct</span>(index: <span class="tp">number</span>) {
+<span class="ln">27</span>    <span class="kw">await</span> <span class="kw">this</span>.cartRows.<span class="fn">nth</span>(index).<span class="fn">locator</span>(<span class="str">'.cart_quantity_delete'</span>).<span class="fn">click</span>();
+<span class="ln">28</span>  }
+<span class="ln">29</span>
+<span class="ln">30</span>  <span class="kw">async</span> <span class="fn">getProductName</span>(index: <span class="tp">number</span>): <span class="tp">Promise</span>&lt;<span class="tp">string</span>&gt; {
+<span class="ln">31</span>    <span class="kw">return</span> <span class="kw">this</span>.cartRows.<span class="fn">nth</span>(index).<span class="fn">locator</span>(<span class="str">'.cart_description h4 a'</span>).<span class="fn">innerText</span>();
+<span class="ln">32</span>  }</pre></div>
+  <div class="explain">
+    <p><strong>getCartItemCount()</strong> &mdash; How many products are in the cart? Count the rows.</p>
+    <p><strong>removeProduct(index)</strong> &mdash; Go to the row at position <code>index</code>, find the delete button (<code>.cart_quantity_delete</code>), and click it.</p>
+    <p><strong>getProductName(index)</strong> &mdash; Read the product name from a specific row.</p>
+  </div>
+</section>
+
+<!-- SECTION 11 — CheckoutPage.ts -->
+<section class="file-section" id="checkout-page">
+  <div class="file-header">
+    <div class="file-icon page">$</div>
+    <h2>CheckoutPage.ts</h2>
+  </div>
+  <div class="file-path">pages / CheckoutPage.ts</div>
+
+  <div class="file-purpose">
+    Maps the <strong>checkout &amp; payment page</strong> &mdash; address verification, order comments, credit card form, and the order confirmation message.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 5</span>  <span class="kw">readonly</span> addressDetails: <span class="tp">Locator</span>;  <span class="cm">// delivery address section</span>
+<span class="ln"> 6</span>  <span class="kw">readonly</span> orderTable: <span class="tp">Locator</span>;     <span class="cm">// order summary table</span>
+<span class="ln"> 7</span>  <span class="kw">readonly</span> commentArea: <span class="tp">Locator</span>;    <span class="cm">// "add a comment" text box</span>
+<span class="ln"> 8</span>  <span class="kw">readonly</span> placeOrderButton: <span class="tp">Locator</span>;
+<span class="ln"> 9</span>
+<span class="ln">10</span>  <span class="kw">readonly</span> nameOnCard: <span class="tp">Locator</span>;     <span class="cm">// payment form fields</span>
+<span class="ln">11</span>  <span class="kw">readonly</span> cardNumber: <span class="tp">Locator</span>;
+<span class="ln">12</span>  <span class="kw">readonly</span> cvc: <span class="tp">Locator</span>;
+<span class="ln">13</span>  <span class="kw">readonly</span> expiryMonth: <span class="tp">Locator</span>;
+<span class="ln">14</span>  <span class="kw">readonly</span> expiryYear: <span class="tp">Locator</span>;
+<span class="ln">15</span>  <span class="kw">readonly</span> payButton: <span class="tp">Locator</span>;
+<span class="ln">16</span>  <span class="kw">readonly</span> orderConfirmation: <span class="tp">Locator</span>;</pre></div>
+  <div class="explain">
+    <p>This page has two groups of locators: the <strong>checkout summary</strong> (address, order table, comment box, "Place Order" button) and the <strong>payment form</strong> (card name, number, CVC, expiry, pay button, and the "Order Placed!" confirmation).</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">46</span>  <span class="kw">async</span> <span class="fn">fillPaymentDetails</span>(payment: {
+<span class="ln">47</span>    nameOnCard: <span class="tp">string</span>; cardNumber: <span class="tp">string</span>;
+<span class="ln">48</span>    cvc: <span class="tp">string</span>; expiryMonth: <span class="tp">string</span>; expiryYear: <span class="tp">string</span>;
+<span class="ln">49</span>  }) {
+<span class="ln">50</span>    <span class="kw">await</span> <span class="kw">this</span>.nameOnCard.<span class="fn">fill</span>(payment.nameOnCard);
+<span class="ln">51</span>    <span class="kw">await</span> <span class="kw">this</span>.cardNumber.<span class="fn">fill</span>(payment.cardNumber);
+<span class="ln">52</span>    <span class="kw">await</span> <span class="kw">this</span>.cvc.<span class="fn">fill</span>(payment.cvc);
+<span class="ln">53</span>    <span class="kw">await</span> <span class="kw">this</span>.expiryMonth.<span class="fn">fill</span>(payment.expiryMonth);
+<span class="ln">54</span>    <span class="kw">await</span> <span class="kw">this</span>.expiryYear.<span class="fn">fill</span>(payment.expiryYear);
+<span class="ln">55</span>    <span class="kw">await</span> <span class="kw">this</span>.payButton.<span class="fn">click</span>();
+<span class="ln">56</span>  }</pre></div>
+  <div class="explain">
+    <p><strong>fillPaymentDetails()</strong> &mdash; Takes a payment object and fills all five credit card fields, then clicks "Pay and Confirm Order." Same <code>.fill()</code> pattern as the registration form &mdash; clear the field, then type.</p>
+  </div>
+</section>
+
+<!-- SECTION 12 — ContactUsPage.ts -->
+<section class="file-section" id="contact-page">
+  <div class="file-header">
+    <div class="file-icon page">@</div>
+    <h2>ContactUsPage.ts</h2>
+  </div>
+  <div class="file-path">pages / ContactUsPage.ts</div>
+
+  <div class="file-purpose">
+    Maps the <strong>Contact Us form page</strong> &mdash; name, email, subject, message fields, submit button, and the green success message.
+  </div>
+
+  <div class="code-block"><pre><span class="ln">14</span>    <span class="kw">this</span>.nameInput = page.<span class="fn">locator</span>(<span class="str">'[data-qa="name"]'</span>);
+<span class="ln">15</span>    <span class="kw">this</span>.emailInput = page.<span class="fn">locator</span>(<span class="str">'[data-qa="email"]'</span>);
+<span class="ln">16</span>    <span class="kw">this</span>.subjectInput = page.<span class="fn">locator</span>(<span class="str">'[data-qa="subject"]'</span>);
+<span class="ln">17</span>    <span class="kw">this</span>.messageInput = page.<span class="fn">locator</span>(<span class="str">'[data-qa="message"]'</span>);
+<span class="ln">18</span>    <span class="kw">this</span>.submitButton = page.<span class="fn">locator</span>(<span class="str">'[data-qa="submit-button"]'</span>);
+<span class="ln">19</span>    <span class="kw">this</span>.successMessage = page.<span class="fn">locator</span>(<span class="str">'.alert-success'</span>);</pre></div>
+  <div class="explain">
+    <p>Five form fields, one submit button, one success message. All straightforward <code>data-qa</code> selectors. The success message uses a Bootstrap CSS class <code>.alert-success</code> (the green banner).</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">26</span>  <span class="kw">async</span> <span class="fn">fillForm</span>(data: { name: <span class="tp">string</span>; email: <span class="tp">string</span>; subject: <span class="tp">string</span>; message: <span class="tp">string</span> }) {
+<span class="ln">27</span>    <span class="kw">await</span> <span class="kw">this</span>.nameInput.<span class="fn">fill</span>(data.name);
+<span class="ln">28</span>    <span class="kw">await</span> <span class="kw">this</span>.emailInput.<span class="fn">fill</span>(data.email);
+<span class="ln">29</span>    <span class="kw">await</span> <span class="kw">this</span>.subjectInput.<span class="fn">fill</span>(data.subject);
+<span class="ln">30</span>    <span class="kw">await</span> <span class="kw">this</span>.messageInput.<span class="fn">fill</span>(data.message);
+<span class="ln">31</span>  }
+<span class="ln">32</span>
+<span class="ln">33</span>  <span class="kw">async</span> <span class="fn">submitForm</span>() {
+<span class="ln">34</span>    <span class="kw">await</span> <span class="kw">this</span>.submitButton.<span class="fn">click</span>();
+<span class="ln">35</span>  }</pre></div>
+  <div class="explain">
+    <p><strong>fillForm()</strong> &mdash; Fills all four fields from a data object.</p>
+    <p><strong>submitForm()</strong> &mdash; Clicks the submit button. The form and submit are separate functions so you can fill the form first, set up event listeners, and then submit.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  FIXTURES                                                     -->
+<!-- ============================================================ -->
+<div class="divider"></div>
+<p class="group-label">Fixtures</p>
+<p class="group-desc">Fixtures prepare things that tests need. Instead of every test file creating page objects, the fixture does it once and shares them.</p>
+
+<section class="file-section" id="fixture">
+  <div class="file-header">
+    <div class="file-icon util">fx</div>
+    <h2>base.fixture.ts</h2>
+  </div>
+  <div class="file-path">fixtures / base.fixture.ts</div>
+
+  <div class="file-purpose">
+    The <strong>fixture factory</strong>. It extends Playwright's built-in <code>test</code> function so every test automatically gets ready-made page objects (homePage, loginPage, etc.) without creating them manually.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span><span class="kw">import</span> { test <span class="kw">as</span> base } <span class="kw">from</span> <span class="str">'@playwright/test'</span>;
+<span class="ln"> 2</span><span class="kw">import</span> { <span class="tp">HomePage</span> } <span class="kw">from</span> <span class="str">'../pages/HomePage'</span>;
+<span class="ln"> 3</span><span class="kw">import</span> { <span class="tp">LoginPage</span> } <span class="kw">from</span> <span class="str">'../pages/LoginPage'</span>;
+<span class="ln"> 4</span><span class="kw">import</span> { <span class="tp">ProductsPage</span> } <span class="kw">from</span> <span class="str">'../pages/ProductsPage'</span>;
+<span class="ln"> 5</span><span class="kw">import</span> { <span class="tp">CartPage</span> } <span class="kw">from</span> <span class="str">'../pages/CartPage'</span>;
+<span class="ln"> 6</span><span class="kw">import</span> { <span class="tp">CheckoutPage</span> } <span class="kw">from</span> <span class="str">'../pages/CheckoutPage'</span>;
+<span class="ln"> 7</span><span class="kw">import</span> { <span class="tp">ContactUsPage</span> } <span class="kw">from</span> <span class="str">'../pages/ContactUsPage'</span>;</pre></div>
+  <div class="explain">
+    <p><strong>Line 1</strong> &mdash; Import Playwright's default <code>test</code> and rename it to <code>base</code>. We rename it because we're going to create a <em>new, enhanced</em> version of <code>test</code>.</p>
+    <p><strong>Lines 2&ndash;7</strong> &mdash; Import all six page object classes.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 9</span><span class="kw">type</span> <span class="tp">PageFixtures</span> = {
+<span class="ln">10</span>  homePage: <span class="tp">HomePage</span>;
+<span class="ln">11</span>  loginPage: <span class="tp">LoginPage</span>;
+<span class="ln">12</span>  productsPage: <span class="tp">ProductsPage</span>;
+<span class="ln">13</span>  cartPage: <span class="tp">CartPage</span>;
+<span class="ln">14</span>  checkoutPage: <span class="tp">CheckoutPage</span>;
+<span class="ln">15</span>  contactUsPage: <span class="tp">ContactUsPage</span>;
+<span class="ln">16</span>};</pre></div>
+  <div class="explain">
+    <p>A TypeScript <strong>type definition</strong> that says: "Our custom test will provide these six extra things, and here's what type each one is." This lets the editor give you auto-complete when writing tests.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">18</span><span class="kw">export const</span> test = base.<span class="fn">extend</span>&lt;<span class="tp">PageFixtures</span>&gt;({
+<span class="ln">19</span>  page: <span class="kw">async</span> ({ page }, use) =&gt; {
+<span class="ln">20</span>    <span class="kw">await</span> page.<span class="fn">route</span>(
+<span class="ln">21</span>      <span class="str">/google(ads|syndication|tagservices)|doubleclick|adservice/</span>,
+<span class="ln">22</span>      (route) =&gt; route.<span class="fn">abort</span>()
+<span class="ln">23</span>    );
+<span class="ln">24</span>    <span class="kw">await</span> <span class="fn">use</span>(page);
+<span class="ln">25</span>  },</pre></div>
+  <div class="explain">
+    <p><strong>Line 18</strong> &mdash; <code>base.extend</code> takes Playwright's default <code>test</code> and adds our custom fixtures to it. This creates a <em>new</em> <code>test</code> function that knows about <code>homePage</code>, <code>loginPage</code>, etc.</p>
+    <p><strong>Lines 19&ndash;25</strong> &mdash; <strong>Override the built-in <code>page</code> fixture.</strong> Before handing the page to any test, block all ad-related network requests. The regex matches URLs containing "googleads", "googlesyndication", "doubleclick", "adservice", etc. <code>route.abort()</code> kills those requests, which makes tests faster and avoids popup ads interfering with clicks.</p>
+    <p><code>await use(page)</code> means "okay, now give this modified page to the test that asked for it."</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-lamp">&#128161;</div>
+    <div>
+      <div class="analogy-label">Fixtures = a waiter</div>
+      <p>Imagine a restaurant. You (the test) sit down and say "I'd like a homePage and a loginPage." The fixture (the waiter) goes to the kitchen, prepares them, brings them to your table, and cleans up after you leave. You never have to cook or wash dishes yourself.</p>
+    </div>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">27</span>  homePage: <span class="kw">async</span> ({ page }, use) =&gt; {
+<span class="ln">28</span>    <span class="kw">await</span> <span class="fn">use</span>(<span class="kw">new</span> <span class="tp">HomePage</span>(page));
+<span class="ln">29</span>  },
+<span class="ln">30</span>
+<span class="ln">31</span>  loginPage: <span class="kw">async</span> ({ page }, use) =&gt; {
+<span class="ln">32</span>    <span class="kw">await</span> <span class="fn">use</span>(<span class="kw">new</span> <span class="tp">LoginPage</span>(page));
+<span class="ln">33</span>  },
+<span class="ln">34</span>  <span class="cm">// ...same pattern for productsPage, cartPage, checkoutPage, contactUsPage</span></pre></div>
+  <div class="explain">
+    <p>Each fixture follows the same pattern: take the <code>page</code> (browser tab), create a new page object from it, and hand it to the test via <code>use()</code>. For example, <code>new HomePage(page)</code> creates a HomePage instance that knows all the locators and methods we defined earlier.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">52</span><span class="kw">export</span> { expect } <span class="kw">from</span> <span class="str">'@playwright/test'</span>;</pre></div>
+  <div class="explain">
+    <p><strong>Line 52</strong> &mdash; Re-export <code>expect</code> from Playwright so test files can import both <code>test</code> and <code>expect</code> from this one fixture file instead of needing two separate imports.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  TEST DATA                                                    -->
+<!-- ============================================================ -->
+<div class="divider"></div>
+<p class="group-label">Test Data</p>
+<p class="group-desc">JSON files that store the data tests use. Keeping data separate from test logic means you can change test inputs without touching test code.</p>
+
+<section class="file-section" id="users-json">
+  <div class="file-header">
+    <div class="file-icon data">{ }</div>
+    <h2>users.json</h2>
+  </div>
+  <div class="file-path">testdata / users.json</div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span>{
+<span class="ln"> 2</span>  <span class="str">"validUser"</span>: {
+<span class="ln"> 3</span>    <span class="str">"name"</span>: <span class="str">"TestUser"</span>,
+<span class="ln"> 4</span>    <span class="str">"password"</span>: <span class="str">"Test@1234"</span>,
+<span class="ln"> 5</span>    <span class="str">"firstName"</span>: <span class="str">"Test"</span>,
+<span class="ln"> 6</span>    <span class="str">"lastName"</span>: <span class="str">"User"</span>,
+<span class="ln"> 7</span>    <span class="str">"company"</span>: <span class="str">"TestCorp"</span>,
+<span class="ln"> 8</span>    <span class="str">"address"</span>: <span class="str">"123 Test Street"</span>,
+<span class="ln"> 9</span>    <span class="str">"address2"</span>: <span class="str">"Apt 4"</span>,
+<span class="ln">10</span>    <span class="str">"country"</span>: <span class="str">"United States"</span>,
+<span class="ln">11</span>    <span class="str">"state"</span>: <span class="str">"California"</span>,
+<span class="ln">12</span>    <span class="str">"city"</span>: <span class="str">"Los Angeles"</span>,
+<span class="ln">13</span>    <span class="str">"zipcode"</span>: <span class="str">"90001"</span>,
+<span class="ln">14</span>    <span class="str">"mobileNumber"</span>: <span class="str">"9876543210"</span>
+<span class="ln">15</span>  },
+<span class="ln">16</span>  <span class="str">"invalidLogins"</span>: [
+<span class="ln">17</span>    {
+<span class="ln">18</span>      <span class="str">"email"</span>: <span class="str">"invalid@test.com"</span>,
+<span class="ln">19</span>      <span class="str">"password"</span>: <span class="str">"wrongpassword"</span>,
+<span class="ln">20</span>      <span class="str">"description"</span>: <span class="str">"incorrect credentials"</span>
+<span class="ln">21</span>    },
+<span class="ln">22</span>    {
+<span class="ln">23</span>      <span class="str">"email"</span>: <span class="str">"notregistered@test.com"</span>,
+<span class="ln">24</span>      <span class="str">"password"</span>: <span class="str">"nopassword"</span>,
+<span class="ln">25</span>      <span class="str">"description"</span>: <span class="str">"unregistered user"</span>
+<span class="ln">26</span>    }
+<span class="ln">27</span>  ]
+<span class="ln">28</span>}</pre></div>
+  <div class="explain">
+    <p><strong>"validUser" (lines 2&ndash;15)</strong> &mdash; A complete fake user with all the details needed to register an account: name, password, address, etc. Tests use this data when filling out the registration form.</p>
+    <p><strong>"invalidLogins" (lines 16&ndash;27)</strong> &mdash; An array (list) of bad login attempts. Each one has an email, password, and a description of <em>why</em> it's wrong. The auth test loops through this list to make sure the website properly rejects each one. This is called <strong>data-driven testing</strong> &mdash; one test logic, many data sets.</p>
+  </div>
+</section>
+
+<section class="file-section" id="contact-json">
+  <div class="file-header">
+    <div class="file-icon data">{ }</div>
+    <h2>contactUs.json</h2>
+  </div>
+  <div class="file-path">testdata / contactUs.json</div>
+
+  <div class="code-block"><pre><span class="ln">1</span>{
+<span class="ln">2</span>  <span class="str">"name"</span>: <span class="str">"Test User"</span>,
+<span class="ln">3</span>  <span class="str">"email"</span>: <span class="str">"testuser@test.com"</span>,
+<span class="ln">4</span>  <span class="str">"subject"</span>: <span class="str">"Test Subject"</span>,
+<span class="ln">5</span>  <span class="str">"message"</span>: <span class="str">"This is a test message for the contact us form validation."</span>
+<span class="ln">6</span>}</pre></div>
+  <div class="explain">
+    <p>Simple data for filling out the Contact Us form. The test imports this and passes it to <code>contactUsPage.fillForm()</code>.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  TEST FILES                                                    -->
+<!-- ============================================================ -->
+<div class="divider"></div>
+<p class="group-label">Test Files</p>
+<p class="group-desc">These are the actual tests &mdash; the "driving directions" that tell the robot what to do and what to check. Each <code>.spec.ts</code> file tests one feature.</p>
+
+<!-- SECTION 16 — auth.spec.ts -->
+<section class="file-section" id="auth-spec">
+  <div class="file-header">
+    <div class="file-icon test">T</div>
+    <h2>auth.spec.ts</h2>
+  </div>
+  <div class="file-path">tests / auth.spec.ts</div>
+
+  <div class="file-purpose">
+    Tests <strong>user authentication</strong>: registering a new account, logging in with valid credentials, logging out, and trying wrong passwords.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span><span class="kw">import</span> { test, expect } <span class="kw">from</span> <span class="str">'../fixtures/base.fixture'</span>;
+<span class="ln"> 2</span><span class="kw">import</span> users <span class="kw">from</span> <span class="str">'../testdata/users.json'</span>;
+<span class="ln"> 3</span><span class="kw">import</span> { <span class="fn">generateRandomEmail</span> } <span class="kw">from</span> <span class="str">'../utils/helpers'</span>;</pre></div>
+  <div class="explain">
+    <p><strong>Line 1</strong> &mdash; Import the <em>custom</em> <code>test</code> and <code>expect</code> from our fixture (not directly from Playwright). This gives tests access to <code>homePage</code>, <code>loginPage</code>, etc.</p>
+    <p><strong>Line 2</strong> &mdash; Import user test data from the JSON file.</p>
+    <p><strong>Line 3</strong> &mdash; Import the random email generator.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 5</span>test.describe.<span class="fn">serial</span>(<span class="str">'User Registration, Login and Logout'</span>, () =&gt; {
+<span class="ln"> 6</span>  <span class="kw">const</span> testEmail = <span class="fn">generateRandomEmail</span>();</pre></div>
+  <div class="explain">
+    <p><strong>Line 5</strong> &mdash; <code>test.describe.serial</code> groups related tests AND runs them <strong>in order</strong>, one after another. Normal <code>describe</code> runs tests in parallel, but here the tests depend on each other: first register, then login with that account, then logout.</p>
+    <p><strong>Line 6</strong> &mdash; Generate a unique email address <em>once</em> for the entire group. All three tests in this group use the same email.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 8</span>  test(<span class="str">'should register a new user and verify account creation'</span>, <span class="kw">async</span> ({ loginPage, page }) =&gt; {
+<span class="ln"> 9</span>    <span class="kw">await</span> loginPage.<span class="fn">navigate</span>();
+<span class="ln">10</span>    <span class="kw">await</span> loginPage.<span class="fn">signup</span>(users.validUser.name, testEmail);
+<span class="ln">11</span>    <span class="kw">await</span> loginPage.<span class="fn">fillRegistrationForm</span>(users.validUser);
+<span class="ln">12</span>
+<span class="ln">13</span>    <span class="kw">await</span> <span class="fn">expect</span>(page.<span class="fn">locator</span>(<span class="str">'[data-qa="account-created"]'</span>)).<span class="fn">toBeVisible</span>();
+<span class="ln">14</span>    <span class="kw">await</span> page.<span class="fn">locator</span>(<span class="str">'[data-qa="continue-button"]'</span>).<span class="fn">click</span>();
+<span class="ln">15</span>    <span class="kw">await</span> <span class="fn">expect</span>(page.<span class="fn">locator</span>(<span class="str">'a:has-text("Logged in as")'</span>)).<span class="fn">toBeVisible</span>();
+<span class="ln">16</span>  });</pre></div>
+  <div class="explain">
+    <p><strong>Line 8</strong> &mdash; Define a test. The <code>{ loginPage, page }</code> destructures the fixtures &mdash; Playwright automatically creates these for you.</p>
+    <p><strong>Line 9</strong> &mdash; Go to the login page.</p>
+    <p><strong>Line 10</strong> &mdash; Fill the signup form with the user's name and the random email.</p>
+    <p><strong>Line 11</strong> &mdash; Fill the full registration form (password, address, etc.) using data from <code>users.json</code>.</p>
+    <p><strong>Line 13</strong> &mdash; <code>expect().toBeVisible()</code> = check that the "Account Created" message shows up. If it doesn't, the test FAILS.</p>
+    <p><strong>Line 14</strong> &mdash; Click "Continue" to proceed to the home page.</p>
+    <p><strong>Line 15</strong> &mdash; Verify that we're logged in by checking for the "Logged in as" text.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">18</span>  test(<span class="str">'should login with valid credentials'</span>, <span class="kw">async</span> ({ loginPage, page }) =&gt; {
+<span class="ln">19</span>    <span class="kw">await</span> loginPage.<span class="fn">navigate</span>();
+<span class="ln">20</span>    <span class="kw">await</span> loginPage.<span class="fn">login</span>(testEmail, users.validUser.password);
+<span class="ln">21</span>    <span class="kw">await</span> <span class="fn">expect</span>(page.<span class="fn">locator</span>(<span class="str">'a:has-text("Logged in as")'</span>)).<span class="fn">toBeVisible</span>();
+<span class="ln">22</span>  });</pre></div>
+  <div class="explain">
+    <p>After registering in the previous test, this test logs in with the <strong>same email</strong> and the password from the JSON data. Then checks that "Logged in as" appears, proving the login worked.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">24</span>  test(<span class="str">'should logout successfully'</span>, <span class="kw">async</span> ({ loginPage, homePage, page }) =&gt; {
+<span class="ln">25</span>    <span class="kw">await</span> loginPage.<span class="fn">navigate</span>();
+<span class="ln">26</span>    <span class="kw">await</span> loginPage.<span class="fn">login</span>(testEmail, users.validUser.password);
+<span class="ln">27</span>    <span class="kw">await</span> <span class="fn">expect</span>(page.<span class="fn">locator</span>(<span class="str">'a:has-text("Logged in as")'</span>)).<span class="fn">toBeVisible</span>();
+<span class="ln">28</span>
+<span class="ln">29</span>    <span class="kw">await</span> homePage.<span class="fn">clickLogout</span>();
+<span class="ln">30</span>    <span class="kw">await</span> <span class="fn">expect</span>(loginPage.loginEmail).<span class="fn">toBeVisible</span>();
+<span class="ln">31</span>  });</pre></div>
+  <div class="explain">
+    <p>Log in, verify logged in, then click logout. After logout, verify we're back on the login page by checking the email input field is visible again.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">35</span>  users.invalidLogins.<span class="fn">forEach</span>((data) =&gt; {
+<span class="ln">36</span>    test(<span class="str">`should show error for ${data.description}`</span>, <span class="kw">async</span> ({ loginPage }) =&gt; {
+<span class="ln">37</span>      <span class="kw">await</span> loginPage.<span class="fn">navigate</span>();
+<span class="ln">38</span>      <span class="kw">await</span> loginPage.<span class="fn">login</span>(data.email, data.password);
+<span class="ln">39</span>      <span class="kw">await</span> <span class="fn">expect</span>(loginPage.loginErrorMessage).<span class="fn">toBeVisible</span>();
+<span class="ln">40</span>    });
+<span class="ln">41</span>  });</pre></div>
+  <div class="explain">
+    <p><strong>Data-driven testing!</strong> The <code>.forEach</code> loops through the <code>invalidLogins</code> array from the JSON file. For each bad login (wrong password, unregistered user), it creates a separate test that:</p>
+    <p>1. Goes to the login page</p>
+    <p>2. Tries to log in with bad credentials</p>
+    <p>3. Checks that the error message appears</p>
+    <p>The <code>${data.description}</code> makes the test name dynamic, so you get test names like "should show error for incorrect credentials" and "should show error for unregistered user."</p>
+  </div>
+</section>
+
+<!-- SECTION 17 — productSearch.spec.ts -->
+<section class="file-section" id="product-spec">
+  <div class="file-header">
+    <div class="file-icon test">T</div>
+    <h2>productSearch.spec.ts</h2>
+  </div>
+  <div class="file-path">tests / productSearch.spec.ts</div>
+
+  <div class="file-purpose">
+    Tests <strong>product search</strong> functionality and demonstrates <strong>network interception</strong> (spying on and faking network requests).
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 4</span>  test(<span class="str">'should search for a product and display relevant results'</span>, <span class="kw">async</span> ({ productsPage }) =&gt; {
+<span class="ln"> 5</span>    <span class="kw">await</span> productsPage.<span class="fn">navigate</span>();
+<span class="ln"> 6</span>    <span class="kw">await</span> productsPage.<span class="fn">searchProduct</span>(<span class="str">'top'</span>);
+<span class="ln"> 7</span>
+<span class="ln"> 8</span>    <span class="kw">await</span> <span class="fn">expect</span>(productsPage.searchedProductsTitle).<span class="fn">toBeVisible</span>();
+<span class="ln"> 9</span>    <span class="kw">const</span> count = <span class="kw">await</span> productsPage.<span class="fn">getProductCount</span>();
+<span class="ln">10</span>    <span class="fn">expect</span>(count).<span class="fn">toBeGreaterThan</span>(<span class="str">0</span>);
+<span class="ln">11</span>  });</pre></div>
+  <div class="explain">
+    <p>Go to products page, search for "top", check that the "Searched Products" title appears, and verify at least one product was found. <code>toBeGreaterThan(0)</code> means "the number of results should be more than zero."</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">14</span>  test(<span class="str">'should intercept product search network request'</span>, <span class="kw">async</span> ({ productsPage, page }) =&gt; {
+<span class="ln">15</span>    <span class="kw">await</span> productsPage.<span class="fn">navigate</span>();
+<span class="ln">16</span>
+<span class="ln">17</span>    <span class="kw">const</span> requestPromise = page.<span class="fn">waitForRequest</span>(
+<span class="ln">18</span>      (request) =&gt; request.<span class="fn">url</span>().<span class="fn">includes</span>(<span class="str">'/products'</span>) &amp;&amp; request.<span class="fn">method</span>() === <span class="str">'POST'</span>
+<span class="ln">19</span>    );
+<span class="ln">20</span>
+<span class="ln">21</span>    <span class="kw">await</span> productsPage.<span class="fn">searchProduct</span>(<span class="str">'tshirt'</span>);
+<span class="ln">22</span>
+<span class="ln">23</span>    <span class="kw">const</span> request = <span class="kw">await</span> requestPromise;
+<span class="ln">24</span>    <span class="fn">expect</span>(request.<span class="fn">postData</span>()).<span class="fn">toContain</span>(<span class="str">'tshirt'</span>);
+<span class="ln">25</span>  });</pre></div>
+  <div class="explain">
+    <p><strong>Network Interception!</strong> This test spies on the network traffic.</p>
+    <p><strong>Lines 17&ndash;19</strong> &mdash; <code>page.waitForRequest()</code> sets up a "listener" that waits for a specific network request: one whose URL contains <code>/products</code> AND whose method is <code>POST</code> (sending data).</p>
+    <p><strong>Line 21</strong> &mdash; Search for "tshirt". This triggers a POST request to the server.</p>
+    <p><strong>Lines 23&ndash;24</strong> &mdash; Catch the request and check that the data it sent (<code>postData()</code>) contains the word "tshirt". This proves the search term was actually sent to the server.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-lamp">&#128161;</div>
+    <div>
+      <div class="analogy-label">Network interception = opening a letter</div>
+      <p>Imagine your test is a mail inspector. When the website sends a letter (network request) to the server, you intercept it, open it, and check that it says what it should. You're not testing the website's UI here &mdash; you're testing what the website <em>actually sends behind the scenes</em>.</p>
+    </div>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">28</span>test.describe(<span class="str">'Network Mocking'</span>, () =&gt; {
+<span class="ln">29</span>  test(<span class="str">'should mock product list API response'</span>, <span class="kw">async</span> ({ page }) =&gt; {
+<span class="ln">30</span>    <span class="kw">const</span> mockResponse = {
+<span class="ln">31</span>      responseCode: <span class="str">200</span>,
+<span class="ln">32</span>      products: [{
+<span class="ln">33</span>        id: <span class="str">1</span>, name: <span class="str">'Mock Product'</span>, price: <span class="str">'Rs. 500'</span>,
+<span class="ln">34</span>        brand: <span class="str">'MockBrand'</span>, category: { category: <span class="str">'Tops'</span> },
+<span class="ln">35</span>      }],
+<span class="ln">36</span>    };
+<span class="ln">37</span>
+<span class="ln">38</span>    <span class="kw">await</span> page.<span class="fn">route</span>(<span class="str">'**/api/productsList'</span>, (route) =&gt; {
+<span class="ln">39</span>      route.<span class="fn">fulfill</span>({
+<span class="ln">40</span>        status: <span class="str">200</span>,
+<span class="ln">41</span>        contentType: <span class="str">'application/json'</span>,
+<span class="ln">42</span>        body: JSON.<span class="fn">stringify</span>(mockResponse),
+<span class="ln">43</span>      });
+<span class="ln">44</span>    });
+<span class="ln">45</span>
+<span class="ln">46</span>    <span class="kw">const</span> response = <span class="kw">await</span> page.request.<span class="fn">get</span>(
+<span class="ln">47</span>      <span class="str">'https://automationexercise.com/api/productsList'</span>
+<span class="ln">48</span>    );
+<span class="ln">49</span>    <span class="kw">const</span> body = <span class="kw">await</span> response.<span class="fn">json</span>();
+<span class="ln">50</span>
+<span class="ln">51</span>    <span class="fn">expect</span>(body.responseCode).<span class="fn">toBe</span>(<span class="str">200</span>);
+<span class="ln">52</span>    <span class="fn">expect</span>(body.products).<span class="fn">toHaveLength</span>(<span class="str">1</span>);
+<span class="ln">53</span>    <span class="fn">expect</span>(body.products[<span class="str">0</span>].name).<span class="fn">toBe</span>(<span class="str">'Mock Product'</span>);
+<span class="ln">54</span>  });
+<span class="ln">55</span>});</pre></div>
+  <div class="explain">
+    <p><strong>Network Mocking!</strong> Instead of reading a letter, this time you're <em>writing a fake reply</em>.</p>
+    <p><strong>Lines 30&ndash;36</strong> &mdash; Create a fake response with one product called "Mock Product."</p>
+    <p><strong>Lines 38&ndash;44</strong> &mdash; <code>page.route()</code> intercepts any request to <code>**/api/productsList</code>. Instead of letting it reach the real server, <code>route.fulfill()</code> sends back your fake data.</p>
+    <p><strong>Lines 46&ndash;48</strong> &mdash; Make a GET request to that URL. Thanks to the route, the fake data comes back.</p>
+    <p><strong>Lines 51&ndash;53</strong> &mdash; Verify the fake data came through correctly: status is 200, there's 1 product, and its name is "Mock Product."</p>
+  </div>
+</section>
+
+<!-- SECTION 18 — cart.spec.ts -->
+<section class="file-section" id="cart-spec">
+  <div class="file-header">
+    <div class="file-icon test">T</div>
+    <h2>cart.spec.ts</h2>
+  </div>
+  <div class="file-path">tests / cart.spec.ts</div>
+
+  <div class="file-purpose">
+    Tests <strong>shopping cart operations</strong> &mdash; adding products and removing them.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 4</span>  test(<span class="str">'should add products to cart and verify'</span>, <span class="kw">async</span> ({ productsPage, cartPage, page }) =&gt; {
+<span class="ln"> 5</span>    <span class="kw">await</span> productsPage.<span class="fn">navigate</span>();
+<span class="ln"> 6</span>
+<span class="ln"> 7</span>    <span class="kw">await</span> productsPage.<span class="fn">addProductToCart</span>(<span class="str">0</span>);      <span class="cm">// add 1st product</span>
+<span class="ln"> 8</span>    <span class="kw">await</span> productsPage.<span class="fn">clickContinueShopping</span>(); <span class="cm">// close popup, keep shopping</span>
+<span class="ln"> 9</span>    <span class="kw">await</span> productsPage.<span class="fn">addProductToCart</span>(<span class="str">1</span>);      <span class="cm">// add 2nd product</span>
+<span class="ln">10</span>    <span class="kw">await</span> productsPage.<span class="fn">clickViewCartInModal</span>();  <span class="cm">// go to cart</span>
+<span class="ln">11</span>
+<span class="ln">12</span>    <span class="kw">const</span> itemCount = <span class="kw">await</span> cartPage.<span class="fn">getCartItemCount</span>();
+<span class="ln">13</span>    <span class="fn">expect</span>(itemCount).<span class="fn">toBe</span>(<span class="str">2</span>);                  <span class="cm">// should have 2 items</span>
+<span class="ln">14</span>  });</pre></div>
+  <div class="explain">
+    <p>Add two products to the cart, navigate to the cart page, and verify there are exactly 2 items. <code>.toBe(2)</code> means "must be exactly 2."</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">16</span>  test(<span class="str">'should remove a product from cart'</span>, <span class="kw">async</span> ({ productsPage, cartPage, page }) =&gt; {
+<span class="ln">17</span>    <span class="kw">await</span> productsPage.<span class="fn">navigate</span>();
+<span class="ln">18</span>    <span class="kw">await</span> productsPage.<span class="fn">addProductToCart</span>(<span class="str">0</span>);
+<span class="ln">19</span>    <span class="kw">await</span> productsPage.<span class="fn">clickViewCartInModal</span>();
+<span class="ln">20</span>
+<span class="ln">21</span>    <span class="kw">const</span> initialCount = <span class="kw">await</span> cartPage.<span class="fn">getCartItemCount</span>();
+<span class="ln">22</span>    <span class="fn">expect</span>(initialCount).<span class="fn">toBe</span>(<span class="str">1</span>);
+<span class="ln">23</span>
+<span class="ln">24</span>    <span class="kw">await</span> cartPage.<span class="fn">removeProduct</span>(<span class="str">0</span>);
+<span class="ln">25</span>    <span class="kw">await</span> page.<span class="fn">waitForTimeout</span>(<span class="str">1000</span>);
+<span class="ln">26</span>
+<span class="ln">27</span>    <span class="kw">await</span> <span class="fn">expect</span>(page.<span class="fn">locator</span>(<span class="str">'#empty_cart'</span>)).<span class="fn">toBeVisible</span>();
+<span class="ln">28</span>  });</pre></div>
+  <div class="explain">
+    <p>Add one product, go to cart, verify it's there (count = 1), remove it, wait 1 second for the animation, then check that the "cart is empty" message appears.</p>
+    <p><code>waitForTimeout(1000)</code> pauses for 1000ms (1 second). This gives the website time to remove the row with an animation.</p>
+  </div>
+</section>
+
+<!-- SECTION 19 — checkout.spec.ts -->
+<section class="file-section" id="checkout-spec">
+  <div class="file-header">
+    <div class="file-icon test">T</div>
+    <h2>checkout.spec.ts</h2>
+  </div>
+  <div class="file-path">tests / checkout.spec.ts</div>
+
+  <div class="file-purpose">
+    Tests the <strong>full checkout flow</strong>: register a user, add a product, fill payment details, and place an order.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 8</span>  test.<span class="fn">beforeEach</span>(<span class="kw">async</span> ({ loginPage }) =&gt; {
+<span class="ln"> 9</span>    <span class="kw">await</span> loginPage.<span class="fn">navigate</span>();
+<span class="ln">10</span>    <span class="kw">await</span> loginPage.<span class="fn">signup</span>(users.validUser.name,
+<span class="ln">11</span>      testEmail + Math.<span class="fn">random</span>().<span class="fn">toString</span>(<span class="str">36</span>).<span class="fn">slice</span>(<span class="str">2</span>));
+<span class="ln">12</span>    <span class="kw">await</span> loginPage.<span class="fn">fillRegistrationForm</span>(users.validUser);
+<span class="ln">13</span>    <span class="kw">await</span> loginPage.page.<span class="fn">locator</span>(<span class="str">'[data-qa="continue-button"]'</span>).<span class="fn">click</span>();
+<span class="ln">14</span>  });</pre></div>
+  <div class="explain">
+    <p><strong><code>test.beforeEach</code></strong> runs before <em>every</em> test in this group. It registers a fresh user each time so the checkout test has a logged-in account with an address on file.</p>
+    <p><strong>Line 11</strong> &mdash; Appends random characters to the email to make it unique each run. <code>Math.random().toString(36).slice(2)</code> produces something like <code>"k7x9f2m"</code>.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="ln">16</span>  test(<span class="str">'should complete checkout flow and place order'</span>, <span class="kw">async</span> ({
+<span class="ln">17</span>    productsPage, cartPage, checkoutPage, page,
+<span class="ln">18</span>  }) =&gt; {
+<span class="ln">19</span>    <span class="kw">await</span> productsPage.<span class="fn">navigate</span>();
+<span class="ln">20</span>    <span class="kw">await</span> productsPage.<span class="fn">addProductToCart</span>(<span class="str">0</span>);
+<span class="ln">21</span>    <span class="kw">await</span> productsPage.<span class="fn">clickViewCartInModal</span>();
+<span class="ln">22</span>
+<span class="ln">23</span>    <span class="kw">await</span> cartPage.<span class="fn">clickProceedToCheckout</span>();
+<span class="ln">24</span>
+<span class="ln">25</span>    <span class="kw">const</span> addressVisible = <span class="kw">await</span> checkoutPage.<span class="fn">verifyAddressVisible</span>();
+<span class="ln">26</span>    <span class="fn">expect</span>(addressVisible).<span class="fn">toBe</span>(<span class="kw">true</span>);
+<span class="ln">27</span>
+<span class="ln">28</span>    <span class="kw">await</span> checkoutPage.<span class="fn">addComment</span>(<span class="str">'Please deliver between 9 AM and 5 PM.'</span>);
+<span class="ln">29</span>    <span class="kw">await</span> checkoutPage.<span class="fn">clickPlaceOrder</span>();
+<span class="ln">30</span>
+<span class="ln">31</span>    <span class="kw">await</span> checkoutPage.<span class="fn">fillPaymentDetails</span>({
+<span class="ln">32</span>      nameOnCard: <span class="str">'Test User'</span>,
+<span class="ln">33</span>      cardNumber: <span class="str">'4111111111111111'</span>,
+<span class="ln">34</span>      cvc: <span class="str">'123'</span>,
+<span class="ln">35</span>      expiryMonth: <span class="str">'12'</span>,
+<span class="ln">36</span>      expiryYear: <span class="str">'2026'</span>,
+<span class="ln">37</span>    });
+<span class="ln">38</span>
+<span class="ln">39</span>    <span class="kw">await</span> <span class="fn">expect</span>(
+<span class="ln">40</span>      page.<span class="fn">locator</span>(<span class="str">'p:has-text("Congratulations! Your order has been confirmed!")'</span>)
+<span class="ln">41</span>    ).<span class="fn">toBeVisible</span>();
+<span class="ln">42</span>  });</pre></div>
+  <div class="explain">
+    <p>This is the <strong>full end-to-end checkout flow</strong>:</p>
+    <p>1. Add a product to the cart</p>
+    <p>2. Go to the cart and proceed to checkout</p>
+    <p>3. Verify the delivery address is shown</p>
+    <p>4. Add a delivery comment</p>
+    <p>5. Click "Place Order" to go to the payment page</p>
+    <p>6. Fill in credit card details (<code>4111...</code> is a standard test card number)</p>
+    <p>7. Verify the "Congratulations!" confirmation message appears</p>
+  </div>
+</section>
+
+<!-- SECTION 20 — contactUs.spec.ts -->
+<section class="file-section" id="contact-spec">
+  <div class="file-header">
+    <div class="file-icon test">T</div>
+    <h2>contactUs.spec.ts</h2>
+  </div>
+  <div class="file-path">tests / contactUs.spec.ts</div>
+
+  <div class="file-purpose">
+    Tests the <strong>Contact Us form</strong> submission and the browser's native confirm dialog.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span><span class="kw">import</span> { test, expect } <span class="kw">from</span> <span class="str">'../fixtures/base.fixture'</span>;
+<span class="ln"> 2</span><span class="kw">import</span> contactData <span class="kw">from</span> <span class="str">'../testdata/contactUs.json'</span>;
+<span class="ln"> 3</span>
+<span class="ln"> 4</span>test.describe(<span class="str">'Contact Us Form'</span>, () =&gt; {
+<span class="ln"> 5</span>  test(<span class="str">'should submit contact us form and verify success'</span>, <span class="kw">async</span> ({ contactUsPage, page }) =&gt; {
+<span class="ln"> 6</span>    <span class="kw">await</span> contactUsPage.<span class="fn">navigate</span>();
+<span class="ln"> 7</span>    <span class="kw">await</span> contactUsPage.<span class="fn">fillForm</span>(contactData);
+<span class="ln"> 8</span>
+<span class="ln"> 9</span>    page.<span class="fn">on</span>(<span class="str">'dialog'</span>, (dialog) =&gt; dialog.<span class="fn">accept</span>());
+<span class="ln">10</span>
+<span class="ln">11</span>    <span class="kw">await</span> contactUsPage.<span class="fn">submitForm</span>();
+<span class="ln">12</span>
+<span class="ln">13</span>    <span class="kw">await</span> <span class="fn">expect</span>(contactUsPage.successMessage).<span class="fn">toBeVisible</span>();
+<span class="ln">14</span>  });
+<span class="ln">15</span>});</pre></div>
+  <div class="explain">
+    <p><strong>Line 7</strong> &mdash; Fill the form with data from <code>contactUs.json</code>.</p>
+    <p><strong>Line 9</strong> &mdash; <code>page.on('dialog', ...)</code>: When the website shows a browser confirm popup ("Press OK to proceed"), automatically click "OK." Without this line, the popup would block the test.</p>
+    <p><strong>Line 11</strong> &mdash; Click submit.</p>
+    <p><strong>Line 13</strong> &mdash; Verify the green success message appears.</p>
+  </div>
+</section>
+
+<!-- SECTION 21 — accessibility.spec.ts -->
+<section class="file-section" id="a11y-spec">
+  <div class="file-header">
+    <div class="file-icon test">T</div>
+    <h2>accessibility.spec.ts</h2>
+  </div>
+  <div class="file-path">tests / accessibility.spec.ts</div>
+
+  <div class="file-purpose">
+    Uses <strong>axe-core</strong> to check the home page for accessibility problems &mdash; things that make the website hard to use for people with disabilities.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span><span class="kw">import</span> <span class="tp">AxeBuilder</span> <span class="kw">from</span> <span class="str">'@axe-core/playwright'</span>;
+<span class="ln"> 2</span><span class="kw">import</span> { test, expect } <span class="kw">from</span> <span class="str">'../fixtures/base.fixture'</span>;
+<span class="ln"> 3</span>
+<span class="ln"> 4</span>test.describe(<span class="str">'Accessibility Testing'</span>, () =&gt; {
+<span class="ln"> 5</span>  test(<span class="str">'should not have critical accessibility violations on home page'</span>, <span class="kw">async</span> ({ page }) =&gt; {
+<span class="ln"> 6</span>    <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'/'</span>);
+<span class="ln"> 7</span>
+<span class="ln"> 8</span>    <span class="kw">const</span> results = <span class="kw">await new</span> <span class="tp">AxeBuilder</span>({ page }).<span class="fn">analyze</span>();
+<span class="ln"> 9</span>
+<span class="ln">10</span>    <span class="kw">const</span> criticalViolations = results.violations.<span class="fn">filter</span>(
+<span class="ln">11</span>      (v) =&gt; v.impact === <span class="str">'critical'</span>
+<span class="ln">12</span>    );
+<span class="ln">13</span>
+<span class="ln">14</span>    <span class="fn">expect</span>(criticalViolations).<span class="fn">toEqual</span>([]);
+<span class="ln">15</span>  });
+<span class="ln">16</span>});</pre></div>
+  <div class="explain">
+    <p><strong>Line 1</strong> &mdash; Import <code>AxeBuilder</code> &mdash; a tool that automatically scans a page for accessibility issues.</p>
+    <p><strong>Line 6</strong> &mdash; Go to the home page.</p>
+    <p><strong>Line 8</strong> &mdash; Run the accessibility scan. <code>new AxeBuilder({ page }).analyze()</code> checks every element on the page against hundreds of rules (missing alt text on images, low color contrast, missing form labels, etc.).</p>
+    <p><strong>Lines 10&ndash;12</strong> &mdash; Filter the results to only <code>critical</code> severity issues (the worst ones).</p>
+    <p><strong>Line 14</strong> &mdash; <code>toEqual([])</code> = the list of critical violations should be empty. If any critical issue is found, the test fails.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-lamp">&#128161;</div>
+    <div>
+      <div class="analogy-label">Accessibility = wheelchair ramps for websites</div>
+      <p>Just like buildings need wheelchair ramps and braille signs, websites need things like proper labels, good color contrast, and keyboard navigation so <em>everyone</em> can use them.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 22 — visualRegression.spec.ts -->
+<section class="file-section" id="visual-spec">
+  <div class="file-header">
+    <div class="file-icon test">T</div>
+    <h2>visualRegression.spec.ts</h2>
+  </div>
+  <div class="file-path">tests / visualRegression.spec.ts</div>
+
+  <div class="file-purpose">
+    Takes a <strong>screenshot</strong> of the home page and compares it to a previously saved "golden" screenshot. If they differ too much, the test fails.
+  </div>
+
+  <div class="code-block"><pre><span class="ln">1</span><span class="kw">import</span> { test, expect } <span class="kw">from</span> <span class="str">'../fixtures/base.fixture'</span>;
+<span class="ln">2</span>
+<span class="ln">3</span>test.describe(<span class="str">'Visual Regression Testing'</span>, () =&gt; {
+<span class="ln">4</span>  test(<span class="str">'should match home page visual snapshot'</span>, <span class="kw">async</span> ({ page }) =&gt; {
+<span class="ln">5</span>    <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'/'</span>);
+<span class="ln">6</span>    <span class="kw">await</span> page.<span class="fn">waitForLoadState</span>(<span class="str">'networkidle'</span>);
+<span class="ln">7</span>
+<span class="ln">8</span>    <span class="kw">await</span> <span class="fn">expect</span>(page).<span class="fn">toHaveScreenshot</span>(<span class="str">'home-page.png'</span>, {
+<span class="ln">9</span>      maxDiffPixels: <span class="str">100</span>,
+<span class="ln">10</span>     fullPage: <span class="kw">false</span>,
+<span class="ln">11</span>   });
+<span class="ln">12</span> });
+<span class="ln">13</span>});</pre></div>
+  <div class="explain">
+    <p><strong>Line 6</strong> &mdash; <code>waitForLoadState('networkidle')</code>: Wait until all network activity has stopped for at least 500ms. This ensures all images, fonts, and scripts have finished loading so the screenshot is complete.</p>
+    <p><strong>Lines 8&ndash;11</strong> &mdash; <code>toHaveScreenshot('home-page.png')</code>: Take a screenshot and compare it to a saved reference image. The first time you run this, Playwright <em>creates</em> the reference. On subsequent runs, it compares.</p>
+    <p><strong><code>maxDiffPixels: 100</code></strong> &mdash; Allow up to 100 pixels to be different. This tolerance handles tiny rendering differences between runs (anti-aliasing, font hinting).</p>
+    <p><strong><code>fullPage: false</code></strong> &mdash; Only capture what's visible in the viewport, not the entire scrollable page.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-lamp">&#128161;</div>
+    <div>
+      <div class="analogy-label">Visual regression = spot-the-difference</div>
+      <p>Remember those "spot the difference" games in activity books? This test does the same thing: it takes two pictures of the home page (the old one and the new one) and checks if anything changed that shouldn't have.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 23 — example.spec.ts -->
+<section class="file-section" id="example-spec">
+  <div class="file-header">
+    <div class="file-icon test">T</div>
+    <h2>example.spec.ts</h2>
+  </div>
+  <div class="file-path">tests / example.spec.ts</div>
+
+  <div class="file-purpose">
+    The <strong>starter example test</strong> that comes with every new Playwright project. It tests the Playwright documentation website itself, not your app.
+  </div>
+
+  <div class="code-block"><pre><span class="ln"> 1</span><span class="kw">import</span> { test, expect } <span class="kw">from</span> <span class="str">'@playwright/test'</span>;
+<span class="ln"> 2</span>
+<span class="ln"> 3</span>test(<span class="str">'has title'</span>, <span class="kw">async</span> ({ page }) =&gt; {
+<span class="ln"> 4</span>  <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'https://playwright.dev/'</span>);
+<span class="ln"> 5</span>  <span class="kw">await</span> <span class="fn">expect</span>(page).<span class="fn">toHaveTitle</span>(<span class="str">/Playwright/</span>);
+<span class="ln"> 6</span>});
+<span class="ln"> 7</span>
+<span class="ln"> 8</span>test(<span class="str">'get started link'</span>, {<span class="str">"tag"</span>: <span class="str">"@first"</span>}, <span class="kw">async</span> ({ page }) =&gt; {
+<span class="ln"> 9</span>  <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'https://playwright.dev/'</span>);
+<span class="ln">10</span>  <span class="kw">await</span> page.<span class="fn">getByRole</span>(<span class="str">'link'</span>, { name: <span class="str">'Get started'</span> }).<span class="fn">click</span>();
+<span class="ln">11</span>  <span class="kw">await</span> <span class="fn">expect</span>(page.<span class="fn">getByRole</span>(<span class="str">'heading'</span>, { name: <span class="str">'Installation'</span> })).<span class="fn">toBeVisible</span>();
+<span class="ln">12</span>});</pre></div>
+  <div class="explain">
+    <p><strong>Line 1</strong> &mdash; Notice this imports from <code>@playwright/test</code> directly (not from your custom fixture). It's the original boilerplate, not wired into your page objects.</p>
+    <p><strong>Lines 3&ndash;6</strong> &mdash; Go to <code>playwright.dev</code> and check that the page title contains "Playwright." The <code>/Playwright/</code> is a regex (pattern match).</p>
+    <p><strong>Line 8</strong> &mdash; <code>{"tag": "@first"}</code>: Tags this test with <code>@first</code>. Remember the <code>test:first</code> script in package.json? It runs <code>--grep @first</code>, which runs only tests with this tag.</p>
+    <p><strong>Line 10</strong> &mdash; <code>getByRole('link', { name: 'Get started' })</code>: Find a link with the accessible name "Get started." This is Playwright's recommended way to find elements &mdash; by their role and accessible name, not by CSS selectors.</p>
+    <p><strong>Line 11</strong> &mdash; After clicking, check that an "Installation" heading is visible (proving the page navigated correctly).</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  SUMMARY                                                      -->
+<!-- ============================================================ -->
+<div class="divider"></div>
+<section>
+  <p class="group-label">How It All Connects</p>
+
+  <div class="analogy" style="flex-direction:column; gap:1rem;">
+    <div style="display:flex; gap:0.8rem; align-items:flex-start;">
+      <div class="analogy-lamp">&#127959;</div>
+      <div>
+        <div class="analogy-label">The whole picture</div>
+        <p>When you type <code>npx playwright test</code>, here's what happens:</p>
+      </div>
+    </div>
+    <p><strong>1.</strong> Playwright reads <code>playwright.config.ts</code> to know: which browsers, which folder, what timeout, etc.</p>
+    <p><strong>2.</strong> It finds all <code>.spec.ts</code> files in the <code>tests/</code> folder.</p>
+    <p><strong>3.</strong> For each test, the <strong>fixture</strong> (<code>base.fixture.ts</code>) creates a fresh browser page, blocks ads, and builds page objects (HomePage, LoginPage, etc.).</p>
+    <p><strong>4.</strong> The test runs its steps: navigate, fill forms, click buttons, check results &mdash; using the page objects as helpers.</p>
+    <p><strong>5.</strong> Playwright repeats every test in <strong>Chromium, Firefox, and WebKit</strong>.</p>
+    <p><strong>6.</strong> At the end, an HTML report is generated in <code>reports/</code> showing which tests passed or failed.</p>
+  </div>
+</section>
+
+</div>

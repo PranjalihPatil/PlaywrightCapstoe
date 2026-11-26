@@ -1,0 +1,11 @@
+[    2216ms] [ERROR] Mixed Content: The page at 'https://automationexercise.com/' was loaded over HTTPS, but requested an insecure stylesheet 'http://fonts.googleapis.com/css?family=Roboto:400,300,400italic,500,700,100'. This request has been blocked; the content must be served over HTTPS. @ https://automationexercise.com/:1
+[    2216ms] [ERROR] Mixed Content: The page at 'https://automationexercise.com/' was loaded over HTTPS, but requested an insecure stylesheet 'http://fonts.googleapis.com/css?family=Open+Sans:400,800,300,600,700'. This request has been blocked; the content must be served over HTTPS. @ https://automationexercise.com/:1
+[    2216ms] [ERROR] Mixed Content: The page at 'https://automationexercise.com/' was loaded over HTTPS, but requested an insecure stylesheet 'http://fonts.googleapis.com/css?family=Abel'. This request has been blocked; the content must be served over HTTPS. @ https://automationexercise.com/:1
+[    3191ms] [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://automationexercise.com/get_product_picture/24:1
+[    3200ms] [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://automationexercise.com/get_product_picture/37:1
+[    3204ms] [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://automationexercise.com/get_product_picture/40:1
+[    3205ms] [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://automationexercise.com/get_product_picture/43:1
+[    3212ms] [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://automationexercise.com/get_product_picture/41:1
+[    3227ms] [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://automationexercise.com/get_product_picture/21:1
+[    3227ms] [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://automationexercise.com/get_product_picture/38:1
+[    3234ms] [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://automationexercise.com/get_product_picture/35:1

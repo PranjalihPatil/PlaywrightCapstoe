@@ -1,5 +1,5 @@
 export const envConfig = {
   baseUrl: 'https://automationexercise.com',
-  timeout: 50000,
+  timeout: 30000,
   retries: 0,
 };

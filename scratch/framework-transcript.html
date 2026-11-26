@@ -1,0 +1,839 @@
+<title>Playwright Framework Walkthrough</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap">
+<style>
+  :root {
+    --bg: #FAFAF8;
+    --bg-alt: #F0EFEC;
+    --bg-code: #2B2D30;
+    --text: #1A1A1A;
+    --text-muted: #5C5B57;
+    --accent: #2563EB;
+    --accent-soft: #DBEAFE;
+    --border: #D6D5D0;
+    --green: #16A34A;
+    --green-soft: #DCFCE7;
+    --amber: #D97706;
+    --amber-soft: #FEF3C7;
+    --purple: #7C3AED;
+    --purple-soft: #EDE9FE;
+    --code-text: #D4D4D8;
+    --code-keyword: #7DD3FC;
+    --code-string: #BEF264;
+    --code-comment: #71717A;
+    --code-fn: #C4B5FD;
+    --step-line: #D6D5D0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #18181B;
+      --bg-alt: #1F1F23;
+      --bg-code: #0F0F12;
+      --text: #E4E4E7;
+      --text-muted: #A1A1AA;
+      --accent: #60A5FA;
+      --accent-soft: #1E3A5F;
+      --border: #3F3F46;
+      --green: #4ADE80;
+      --green-soft: #14532D;
+      --amber: #FBBF24;
+      --amber-soft: #422006;
+      --purple: #A78BFA;
+      --purple-soft: #2E1065;
+      --code-text: #D4D4D8;
+      --code-keyword: #7DD3FC;
+      --code-string: #BEF264;
+      --code-comment: #71717A;
+      --code-fn: #C4B5FD;
+      --step-line: #3F3F46;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #18181B;
+    --bg-alt: #1F1F23;
+    --bg-code: #0F0F12;
+    --text: #E4E4E7;
+    --text-muted: #A1A1AA;
+    --accent: #60A5FA;
+    --accent-soft: #1E3A5F;
+    --border: #3F3F46;
+    --green: #4ADE80;
+    --green-soft: #14532D;
+    --amber: #FBBF24;
+    --amber-soft: #422006;
+    --purple: #A78BFA;
+    --purple-soft: #2E1065;
+    --code-text: #D4D4D8;
+    --code-keyword: #7DD3FC;
+    --code-string: #BEF264;
+    --code-comment: #71717A;
+    --code-fn: #C4B5FD;
+    --step-line: #3F3F46;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.65;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.15;
+    text-wrap: balance;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 540px;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 0.3rem 0.65rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .tag--blue { background: var(--accent-soft); color: var(--accent); }
+  .tag--green { background: var(--green-soft); color: var(--green); }
+  .tag--amber { background: var(--amber-soft); color: var(--amber); }
+  .tag--purple { background: var(--purple-soft); color: var(--purple); }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 3rem;
+  }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .section h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.45rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin-bottom: 1rem;
+  }
+  .section p {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    max-width: 65ch;
+  }
+
+  /* ── Folder tree ── */
+  .tree-block {
+    background: var(--bg-code);
+    color: var(--code-text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    padding: 1.5rem 1.75rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+  }
+  .tree-block .dir { color: var(--code-keyword); font-weight: 500; }
+  .tree-block .file { color: var(--code-text); }
+  .tree-block .note { color: var(--code-comment); }
+
+  /* ── Step cards ── */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0 1rem;
+    padding-bottom: 2rem;
+    position: relative;
+  }
+  .step:last-child { padding-bottom: 0; }
+  .step::before {
+    content: '';
+    position: absolute;
+    left: 1.2rem;
+    top: 2rem;
+    bottom: 0;
+    width: 1px;
+    background: var(--step-line);
+  }
+  .step:last-child::before { display: none; }
+  .step-num {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+  }
+  .step-body {
+    padding-top: 0.35rem;
+  }
+  .step-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.15rem;
+  }
+  .step-file {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .step-desc {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    margin-bottom: 0.65rem;
+    max-width: 60ch;
+  }
+
+  /* ── Code blocks inside steps ── */
+  .code-mini {
+    background: var(--bg-code);
+    color: var(--code-text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    line-height: 1.7;
+    padding: 0.85rem 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-top: 0.5rem;
+  }
+  .code-mini .kw { color: var(--code-keyword); }
+  .code-mini .str { color: var(--code-string); }
+  .code-mini .cmt { color: var(--code-comment); }
+  .code-mini .fn { color: var(--code-fn); }
+
+  /* ── Bullet list ── */
+  .bullet-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.25rem;
+  }
+  .bullet-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+  }
+  .bullet-list li::before {
+    content: '→';
+    color: var(--accent);
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 0.05em;
+  }
+
+  /* ── Summary table ── */
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin-top: 0.75rem;
+  }
+  .summary-table th {
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0.5rem 0.75rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .summary-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .summary-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .summary-table td:last-child {
+    color: var(--text-muted);
+  }
+
+  /* ── Callout ── */
+  .callout {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem 1.15rem;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  .callout-icon {
+    flex-shrink: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+  .callout-text {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .callout-text strong { font-weight: 600; }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 2rem 1rem 3rem; }
+    .hero { padding: 2rem 0 1.5rem; }
+    .step { grid-template-columns: 2rem 1fr; gap: 0 0.75rem; }
+    .step-num { width: 2rem; height: 2rem; font-size: 0.7rem; }
+    .step::before { left: 0.95rem; }
+  }
+</style>
+
+<div class="container">
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-eyebrow">Team Presentation Transcript</div>
+    <h1>Playwright Test Automation Framework</h1>
+    <p class="hero-sub">A step-by-step walkthrough of our Page Object Model framework — what each file does, why it exists, and how the pieces connect.</p>
+    <div class="hero-meta">
+      <span class="tag tag--blue">Playwright</span>
+      <span class="tag tag--green">TypeScript</span>
+      <span class="tag tag--amber">Page Object Model</span>
+      <span class="tag tag--purple">3 Browsers</span>
+    </div>
+  </header>
+
+  <!-- Section 1: Big picture -->
+  <div class="section">
+    <div class="section-label">The Big Picture</div>
+    <h2>What is this framework?</h2>
+    <p>This is an end-to-end test automation framework built on <strong>Playwright</strong> using <strong>TypeScript</strong>. It tests the site <strong>automationexercise.com</strong> across three browsers — Chromium, Firefox, and WebKit — running in parallel.</p>
+    <p>The architecture follows the <strong>Page Object Model (POM)</strong> pattern: every web page has a corresponding class that owns all the locators and actions for that page. Tests never touch raw selectors — they call methods like <code>loginPage.login(email, password)</code> instead.</p>
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text"><strong>Why POM?</strong> If a UI element changes (a button moves, a selector changes), you fix it in <em>one</em> page object file — not across dozens of tests. It makes tests readable, maintainable, and resistant to UI churn.</div>
+    </div>
+  </div>
+
+  <!-- Section 2: Folder structure -->
+  <div class="section">
+    <div class="section-label">Project Layout</div>
+    <h2>Folder structure at a glance</h2>
+    <p>Every folder has a single responsibility. Here's what each one holds and why.</p>
+    <div class="tree-block">
+<span class="dir">Playwright_Agilent/</span>
+├── <span class="dir">config/</span>
+│   └── <span class="file">env.config.ts</span>         <span class="note">← environment settings (URL, timeout)</span>
+├── <span class="dir">fixtures/</span>
+│   └── <span class="file">base.fixture.ts</span>       <span class="note">← custom test fixtures (dependency injection)</span>
+├── <span class="dir">pages/</span>
+│   ├── <span class="file">BasePage.ts</span>           <span class="note">← parent class all pages extend</span>
+│   ├── <span class="file">HomePage.ts</span>           <span class="note">← home page actions</span>
+│   ├── <span class="file">LoginPage.ts</span>          <span class="note">← login &amp; registration</span>
+│   ├── <span class="file">ProductsPage.ts</span>       <span class="note">← search &amp; add to cart</span>
+│   ├── <span class="file">CartPage.ts</span>           <span class="note">← cart verification &amp; removal</span>
+│   ├── <span class="file">CheckoutPage.ts</span>       <span class="note">← checkout &amp; payment</span>
+│   └── <span class="file">ContactUsPage.ts</span>      <span class="note">← contact form</span>
+├── <span class="dir">tests/</span>
+│   ├── <span class="file">auth.spec.ts</span>          <span class="note">← register, login, logout</span>
+│   ├── <span class="file">cart.spec.ts</span>          <span class="note">← add/remove cart items</span>
+│   ├── <span class="file">checkout.spec.ts</span>      <span class="note">← full checkout flow</span>
+│   ├── <span class="file">contactUs.spec.ts</span>     <span class="note">← contact form submission</span>
+│   ├── <span class="file">productSearch.spec.ts</span> <span class="note">← search + network mocking</span>
+│   ├── <span class="file">accessibility.spec.ts</span> <span class="note">← axe-core a11y scan</span>
+│   └── <span class="file">visualRegression.spec.ts</span> <span class="note">← screenshot comparison</span>
+├── <span class="dir">testdata/</span>
+│   ├── <span class="file">users.json</span>            <span class="note">← user credentials &amp; addresses</span>
+│   └── <span class="file">contactUs.json</span>        <span class="note">← contact form data</span>
+├── <span class="dir">utils/</span>
+│   └── <span class="file">helpers.ts</span>            <span class="note">← utility functions</span>
+├── <span class="file">playwright.config.ts</span>      <span class="note">← Playwright configuration</span>
+└── <span class="file">package.json</span>              <span class="note">← dependencies &amp; scripts</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 3: Step-by-step walkthrough -->
+  <div class="section">
+    <div class="section-label">Step-by-Step Walkthrough</div>
+    <h2>Every file explained, in the order you'd read them</h2>
+  </div>
+
+  <div class="steps">
+
+    <!-- Step 1 -->
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Environment Configuration</div>
+        <div class="step-file">config/env.config.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> Centralizes all environment-specific settings in one place. If we switch to a staging URL or want to change the global timeout, we change it here — not in every test file.</div>
+        <div class="code-mini">
+<span class="kw">export const</span> envConfig = {
+  baseUrl: <span class="str">'https://automationexercise.com'</span>,
+  timeout: <span class="str">30000</span>,   <span class="cmt">// 30 seconds per test</span>
+  retries: <span class="str">0</span>,
+};
+        </div>
+        <ul class="bullet-list">
+          <li><code>baseUrl</code> — the app under test; all <code>navigateTo('/path')</code> calls resolve against this</li>
+          <li><code>timeout</code> — how long Playwright waits before failing a test</li>
+          <li><code>retries</code> — 0 locally (fail fast), can be changed for CI</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Playwright Configuration</div>
+        <div class="step-file">playwright.config.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> This is Playwright's entry point — it tells Playwright where tests live, which browsers to run, how to report results, and what to capture on failure.</div>
+        <div class="code-mini">
+<span class="kw">export default</span> <span class="fn">defineConfig</span>({
+  testDir: <span class="str">'./tests'</span>,
+  fullyParallel: <span class="str">true</span>,
+  workers: process.env.CI ? <span class="str">1</span> : <span class="str">3</span>,
+  reporter: [[<span class="str">'html'</span>, { outputFolder: <span class="str">'reports'</span> }]],
+  use: {
+    baseURL: envConfig.baseUrl,
+    trace: <span class="str">'on-first-retry'</span>,
+    screenshot: <span class="str">'only-on-failure'</span>,
+    video: <span class="str">'retain-on-failure'</span>,
+  },
+  projects: [
+    { name: <span class="str">'chromium'</span>, ... },
+    { name: <span class="str">'firefox'</span>, ... },
+    { name: <span class="str">'webkit'</span>, ... },
+  ],
+});
+        </div>
+        <ul class="bullet-list">
+          <li><strong>fullyParallel + 3 workers</strong> — tests run simultaneously across browsers for speed</li>
+          <li><strong>HTML reporter</strong> — generates a browsable report in <code>reports/</code></li>
+          <li><strong>trace on first retry</strong> — captures a full trace (network, DOM, screenshots) when retrying</li>
+          <li><strong>screenshot + video on failure</strong> — automatic evidence capture for debugging</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Custom Fixtures (Dependency Injection)</div>
+        <div class="step-file">fixtures/base.fixture.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> This is the heart of the framework's ergonomics. Instead of creating page objects manually in every test, fixtures inject them automatically. Tests just declare what they need.</div>
+        <div class="code-mini">
+<span class="kw">export const</span> test = base.<span class="fn">extend</span>&lt;PageFixtures&gt;({
+  page: <span class="kw">async</span> ({ page }, use) =&gt; {
+    <span class="cmt">// Block ad network requests</span>
+    <span class="kw">await</span> page.<span class="fn">route</span>(
+      <span class="str">/google(ads|syndication)|doubleclick/</span>,
+      (route) =&gt; route.<span class="fn">abort</span>()
+    );
+    <span class="kw">await</span> page.<span class="fn">waitForTimeout</span>(<span class="str">5000</span>);
+    <span class="kw">await</span> <span class="fn">use</span>(page);
+  },
+
+  homePage:    <span class="kw">async</span> ({ page }, use) =&gt; { <span class="kw">await</span> <span class="fn">use</span>(<span class="kw">new</span> <span class="fn">HomePage</span>(page)); },
+  loginPage:   <span class="kw">async</span> ({ page }, use) =&gt; { <span class="kw">await</span> <span class="fn">use</span>(<span class="kw">new</span> <span class="fn">LoginPage</span>(page)); },
+  productsPage:<span class="kw">async</span> ({ page }, use) =&gt; { <span class="kw">await</span> <span class="fn">use</span>(<span class="kw">new</span> <span class="fn">ProductsPage</span>(page)); },
+  cartPage:    <span class="kw">async</span> ({ page }, use) =&gt; { <span class="kw">await</span> <span class="fn">use</span>(<span class="kw">new</span> <span class="fn">CartPage</span>(page)); },
+  <span class="cmt">// ... checkoutPage, contactUsPage</span>
+});
+        </div>
+        <div class="callout">
+          <span class="callout-icon">💡</span>
+          <div class="callout-text"><strong>What is a fixture?</strong> Think of it as a "setup recipe" that Playwright runs before your test. When a test parameter says <code>{ loginPage }</code>, Playwright automatically creates a <code>LoginPage</code> instance and hands it to the test. No manual setup code needed. The fixture also <strong>blocks ad requests</strong> so third-party scripts don't interfere with our tests.</div>
+        </div>
+        <ul class="bullet-list">
+          <li><strong>Ad blocking</strong> — routes matching google ads / doubleclick are aborted, preventing flaky failures from ad scripts</li>
+          <li><strong>5-second wait</strong> — gives the page time to stabilize after navigation</li>
+          <li><strong>All tests import from here</strong> — <code>import { test, expect } from '../fixtures/base.fixture'</code> instead of <code>@playwright/test</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Base Page Object</div>
+        <div class="step-file">pages/BasePage.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> Every page object extends this class. It holds shared methods that all pages need — right now that's <code>navigateTo()</code> and <code>getPageTitle()</code>. As the framework grows, shared helpers go here.</div>
+        <div class="code-mini">
+<span class="kw">export class</span> <span class="fn">BasePage</span> {
+  <span class="kw">constructor</span>(<span class="kw">protected</span> page: Page) {}
+
+  <span class="kw">async</span> <span class="fn">navigateTo</span>(path: string) {
+    <span class="kw">await</span> <span class="kw">this</span>.page.<span class="fn">goto</span>(path);
+  }
+}
+        </div>
+        <ul class="bullet-list">
+          <li>Receives the Playwright <code>page</code> object via constructor</li>
+          <li><code>navigateTo('/login')</code> resolves against the <code>baseURL</code> from config</li>
+          <li>Child classes inherit this, so they can call <code>this.navigateTo()</code> directly</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Home Page Object</div>
+        <div class="step-file">pages/HomePage.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> Encapsulates all interactions with the home page — navigation links, checking login state, accessing cart. Tests call <code>homePage.clickLogout()</code> instead of knowing the selector.</div>
+        <ul class="bullet-list">
+          <li><strong>Locators:</strong> signup/login link, logged-in user text, logout link, cart link</li>
+          <li><strong>Methods:</strong> <code>navigate()</code>, <code>getLoggedInUsername()</code>, <code>clickSignupLogin()</code>, <code>clickLogout()</code>, <code>clickCart()</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <div class="step-title">Login Page Object</div>
+        <div class="step-file">pages/LoginPage.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> Handles both login and user registration. The <code>fillRegistrationForm()</code> method fills all 15+ fields using data from the user object — keeping test code clean.</div>
+        <ul class="bullet-list">
+          <li><code>login(email, password)</code> — fills email/password fields, clicks login button</li>
+          <li><code>signup(name, email)</code> — fills signup fields, clicks signup button</li>
+          <li><code>fillRegistrationForm(userData)</code> — fills full registration form (gender, DOB, address, phone) and submits</li>
+          <li>Uses <code>[data-qa="..."]</code> selectors — stable test-specific attributes the site provides</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 7 -->
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <div class="step-title">Products Page Object</div>
+        <div class="step-file">pages/ProductsPage.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> Handles product browsing — searching, counting results, and the add-to-cart flow including the confirmation modal.</div>
+        <ul class="bullet-list">
+          <li><code>searchProduct(term)</code> — types into search and clicks the search button</li>
+          <li><code>getProductCount()</code> — returns the number of visible products</li>
+          <li><code>addProductToCart(index)</code> — scrolls to a product and clicks its "Add to Cart" button</li>
+          <li><code>clickContinueShopping()</code> / <code>clickViewCartInModal()</code> — handles the modal that appears after adding</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 8 -->
+    <div class="step">
+      <div class="step-num">8</div>
+      <div class="step-body">
+        <div class="step-title">Cart Page Object</div>
+        <div class="step-file">pages/CartPage.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> Encapsulates cart verification — counting items, reading product names, removing products, and proceeding to checkout.</div>
+        <ul class="bullet-list">
+          <li><code>getCartItemCount()</code> — returns number of rows in the cart table</li>
+          <li><code>getProductName(index)</code> — reads the product name from a specific row</li>
+          <li><code>removeProduct(index)</code> — clicks the delete button on a row</li>
+          <li><code>clickProceedToCheckout()</code> — moves to the checkout step</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 9 -->
+    <div class="step">
+      <div class="step-num">9</div>
+      <div class="step-body">
+        <div class="step-title">Checkout Page Object</div>
+        <div class="step-file">pages/CheckoutPage.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> Handles the multi-step checkout — verifying the delivery address, adding order comments, placing the order, and filling payment card details.</div>
+        <ul class="bullet-list">
+          <li><code>verifyAddressVisible()</code> — confirms the delivery address section is showing</li>
+          <li><code>addComment(comment)</code> — fills the order comment textarea</li>
+          <li><code>clickPlaceOrder()</code> — clicks the Place Order button</li>
+          <li><code>fillPaymentDetails(payment)</code> — fills card name, number, CVC, expiry and submits</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 10 -->
+    <div class="step">
+      <div class="step-num">10</div>
+      <div class="step-body">
+        <div class="step-title">Contact Us Page Object</div>
+        <div class="step-file">pages/ContactUsPage.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> Wraps the contact form — filling all fields and submitting. The success message locator is stored here so tests can assert against it.</div>
+        <ul class="bullet-list">
+          <li><code>fillForm(data)</code> — fills name, email, subject, message from a data object</li>
+          <li><code>submitForm()</code> — clicks the submit button</li>
+          <li><code>successMessage</code> — locator for the success alert (used in test assertions)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 11 -->
+    <div class="step">
+      <div class="step-num">11</div>
+      <div class="step-body">
+        <div class="step-title">Test Data</div>
+        <div class="step-file">testdata/users.json &amp; contactUs.json</div>
+        <div class="step-desc"><strong>Why they exist:</strong> Test data lives in JSON files, separate from test logic. This makes it easy to add new test data scenarios without touching test code — and keeps tests clean and readable.</div>
+        <div class="code-mini">
+<span class="cmt">// users.json — valid user + invalid login combos</span>
+{
+  <span class="str">"validUser"</span>: {
+    <span class="str">"name"</span>: <span class="str">"TestUser"</span>,
+    <span class="str">"password"</span>: <span class="str">"Test@1234"</span>,
+    <span class="str">"firstName"</span>: <span class="str">"Test"</span>, <span class="str">"lastName"</span>: <span class="str">"User"</span>,
+    <span class="str">"country"</span>: <span class="str">"United States"</span>, ...
+  },
+  <span class="str">"invalidLogins"</span>: [ ... ]
+}
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 12 -->
+    <div class="step">
+      <div class="step-num">12</div>
+      <div class="step-body">
+        <div class="step-title">Utility Helpers</div>
+        <div class="step-file">utils/helpers.ts</div>
+        <div class="step-desc"><strong>Why it exists:</strong> Shared helper functions that tests need but don't belong to any page. Right now it has one function — generating unique emails so each test run creates a fresh account.</div>
+        <div class="code-mini">
+<span class="kw">export function</span> <span class="fn">generateRandomEmail</span>(): string {
+  <span class="kw">return</span> <span class="str">`testuser_${Date.now()}@test.com`</span>;
+}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 4: Tests -->
+  <div class="section">
+    <div class="section-label">Test Files</div>
+    <h2>What each test covers</h2>
+    <p>Every <code>.spec.ts</code> file is a test suite. Here's what each one validates and the testing technique it demonstrates.</p>
+    <div style="overflow-x: auto;">
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Test File</th>
+          <th>What It Does</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>auth.spec.ts</td>
+          <td><strong>Register → Login → Logout.</strong> Runs in serial order because each test depends on the previous one (must register before logging in). Uses <code>generateRandomEmail()</code> so each run gets a fresh account.</td>
+        </tr>
+        <tr>
+          <td>cart.spec.ts</td>
+          <td><strong>Add 2 products → verify cart count. Remove a product → verify cart is empty.</strong> Demonstrates the add-to-cart modal flow and cart state verification.</td>
+        </tr>
+        <tr>
+          <td>checkout.spec.ts</td>
+          <td><strong>Full end-to-end checkout.</strong> Registers a user, adds a product, proceeds through checkout, fills payment details, verifies "order confirmed" message. The longest user journey in the suite.</td>
+        </tr>
+        <tr>
+          <td>contactUs.spec.ts</td>
+          <td><strong>Contact form submission.</strong> Fills the form from JSON data, handles the browser confirmation dialog with <code>page.on('dialog')</code>, verifies the success message.</td>
+        </tr>
+        <tr>
+          <td>productSearch.spec.ts</td>
+          <td><strong>Three tests in one file:</strong> (1) Search for "top" and verify results appear. (2) <strong>Network interception</strong> — captures the search request and asserts the URL contains the search term. (3) <strong>API mocking</strong> — intercepts <code>/api/productsList</code> and returns a fake response.</td>
+        </tr>
+        <tr>
+          <td>accessibility.spec.ts</td>
+          <td><strong>Accessibility scan</strong> using <code>@axe-core/playwright</code>. Runs the axe engine on the home page, filters for critical violations, and allows at most 3. Catches issues like missing alt text, broken ARIA roles, low contrast.</td>
+        </tr>
+        <tr>
+          <td>visualRegression.spec.ts</td>
+          <td><strong>Screenshot comparison.</strong> Takes a screenshot of the home page (hides dynamic elements like carousels), compares it against a stored baseline with 5% pixel diff tolerance. Catches unintended visual changes.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 5: How it flows -->
+  <div class="section">
+    <div class="section-label">How It All Connects</div>
+    <h2>The execution flow</h2>
+    <p>Here's what happens when you run <code>npm test</code>:</p>
+    <ul class="bullet-list" style="margin-top: 0.5rem; gap: 0.6rem;">
+      <li>Playwright reads <strong>playwright.config.ts</strong> → learns test directory, browsers, timeouts</li>
+      <li>Config pulls settings from <strong>config/env.config.ts</strong> → baseURL, timeout, retries</li>
+      <li>Each test file imports <code>{ test, expect }</code> from <strong>fixtures/base.fixture.ts</strong></li>
+      <li>The fixture creates a <code>page</code> with ad-blocking, then instantiates <strong>page objects</strong> on demand</li>
+      <li>Page objects extend <strong>BasePage.ts</strong> and use its <code>navigateTo()</code></li>
+      <li>Tests call page object methods → page objects interact with the browser</li>
+      <li>Test data comes from <strong>testdata/*.json</strong> files</li>
+      <li>Results → <strong>HTML report</strong> in <code>reports/</code>, with screenshots/video on failure</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 6: NPM scripts -->
+  <div class="section">
+    <div class="section-label">Running Tests</div>
+    <h2>Available NPM scripts</h2>
+    <div style="overflow-x: auto;">
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Command</th>
+          <th>What It Does</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>npm test</td>
+          <td>Run all tests across all 3 browsers in parallel</td>
+        </tr>
+        <tr>
+          <td>npm run test:chromium</td>
+          <td>Run only on Chromium (fastest for local development)</td>
+        </tr>
+        <tr>
+          <td>npm run test:UI</td>
+          <td>Open Playwright's interactive UI mode — watch tests run, step through, debug</td>
+        </tr>
+        <tr>
+          <td>npm run test:report</td>
+          <td>Run all tests then open the HTML report in the browser</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 7: Patterns -->
+  <div class="section">
+    <div class="section-label">Key Patterns</div>
+    <h2>Techniques used in this framework</h2>
+    <div style="overflow-x: auto;">
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Pattern</th>
+          <th>Where &amp; Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Page Object Model</td>
+          <td>All <code>pages/*.ts</code> files. One class per page — locators and actions encapsulated. Tests stay clean and selectors are maintained in one place.</td>
+        </tr>
+        <tr>
+          <td>Custom Fixtures</td>
+          <td><code>fixtures/base.fixture.ts</code>. Page objects injected into tests automatically. No boilerplate <code>new LoginPage(page)</code> in every test.</td>
+        </tr>
+        <tr>
+          <td>Data-Driven Testing</td>
+          <td><code>testdata/*.json</code>. Test data separated from logic. Easy to add scenarios without changing test code.</td>
+        </tr>
+        <tr>
+          <td>Ad Blocking</td>
+          <td>Fixture's route interception. Blocks third-party ad scripts that cause flaky failures and slow down tests.</td>
+        </tr>
+        <tr>
+          <td>Cross-Browser</td>
+          <td><code>playwright.config.ts</code> projects. Every test runs on Chromium, Firefox, and WebKit automatically.</td>
+        </tr>
+        <tr>
+          <td>Network Interception</td>
+          <td><code>productSearch.spec.ts</code>. Captures real requests for assertion, and mocks API responses for isolated testing.</td>
+        </tr>
+        <tr>
+          <td>Accessibility Testing</td>
+          <td><code>accessibility.spec.ts</code>. <code>@axe-core/playwright</code> integration scans for WCAG violations.</td>
+        </tr>
+        <tr>
+          <td>Visual Regression</td>
+          <td><code>visualRegression.spec.ts</code>. <code>toHaveScreenshot()</code> compares against baselines with a pixel diff threshold.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+</div>

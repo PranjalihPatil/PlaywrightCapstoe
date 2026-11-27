@@ -10,6 +10,10 @@ export class LoginPage extends BasePage {
   readonly signupName: Locator;
   readonly signupEmail: Locator;
   readonly signupButton: Locator;
+  readonly newUserSignupHeading: Locator;
+  readonly enterAccountInfoHeading: Locator;
+  readonly newsletterCheckbox: Locator;
+  readonly specialOffersCheckbox: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -21,6 +25,10 @@ export class LoginPage extends BasePage {
     this.signupName = page.locator('[data-qa="signup-name"]');
     this.signupEmail = page.locator('[data-qa="signup-email"]');
     this.signupButton = page.locator('[data-qa="signup-button"]');
+    this.newUserSignupHeading = page.getByText('New User Signup!');
+    this.enterAccountInfoHeading = page.getByText('Enter Account Information');
+    this.newsletterCheckbox = page.locator('#newsletter');
+    this.specialOffersCheckbox = page.locator('#optin');
   }
 
   async navigate() {
@@ -57,6 +65,8 @@ export class LoginPage extends BasePage {
     await this.page.locator('[data-qa="days"]').selectOption('10');
     await this.page.locator('[data-qa="months"]').selectOption('June');
     await this.page.locator('[data-qa="years"]').selectOption('1990');
+    await this.newsletterCheckbox.check();
+    await this.specialOffersCheckbox.check();
     await this.page.locator('[data-qa="first_name"]').fill(userData.firstName);
     await this.page.locator('[data-qa="last_name"]').fill(userData.lastName);
     await this.page.locator('[data-qa="company"]').fill(userData.company);

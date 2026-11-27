@@ -5,6 +5,7 @@ export class HomePage extends BasePage {
   readonly signupLoginLink: Locator;
   readonly loggedInUser: Locator;
   readonly logoutLink: Locator;
+  readonly deleteAccountLink: Locator;
   readonly productCards: Locator;
   readonly cartLink: Locator;
   readonly contactUsLink: Locator;
@@ -14,6 +15,7 @@ export class HomePage extends BasePage {
     this.signupLoginLink = page.locator('a[href="/login"]');
     this.loggedInUser = page.locator('a:has-text("Logged in as")');
     this.logoutLink = page.locator('a[href="/logout"]');
+    this.deleteAccountLink = page.locator('a[href="/delete_account"]');
     this.productCards = page.locator('.features_items .col-sm-4');
     this.cartLink = page.locator('a[href="/view_cart"]').first();
     this.contactUsLink = page.locator('a[href="/contact_us"]');
@@ -38,5 +40,9 @@ export class HomePage extends BasePage {
 
   async clickCart() {
     await this.cartLink.click();
+  }
+
+  async clickDeleteAccount() {
+    await this.deleteAccountLink.click();
   }
 }

@@ -25,8 +25,7 @@ test.describe('Checkout and Order Placement', () => {
 
     await cartPage.clickProceedToCheckout();
 
-    const addressVisible = await checkoutPage.verifyAddressVisible();
-    expect(addressVisible).toBe(true);
+    await expect(checkoutPage.addressDetails).toBeVisible({ timeout: 15000 });
 
     await checkoutPage.addComment('Please deliver between 9 AM and 5 PM.');
     await checkoutPage.clickPlaceOrder();

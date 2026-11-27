@@ -18,10 +18,14 @@ type PageFixtures = {
 export const test = base.extend<PageFixtures>({
   page: async ({ page }, use) => {
     await page.route(
-      /google(ads|syndication|tagservices)|doubleclick|adservice/,
+      /google(ads|syndication|tagservices|adservices)|doubleclick|adservice|googlesyndication|adsbygoogle|pagead|googleads|aswift_|partner\.googleadservices/,
       (route) => route.abort()
     );
-    await page.waitForTimeout(5000);
+    await page.addInitScript(() => {
+      const style = document.createElement('style');
+      style.textContent = 'ins.adsbygoogle, iframe[id^="aswift_"], iframe[title="Advertisement"], #google-ads-iframe, .adsbygoogle { display: none !important; height: 0 !important; visibility: hidden !important; pointer-events: none !important; }';
+      document.head.appendChild(style);
+    });
     await use(page);
   },
 

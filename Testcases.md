@@ -4,7 +4,7 @@ Application URL: https://automationexercise.com
 
 Prompt 1: Register User and Delete Account
 
-Generate a Playwright test in JavaScript using @playwright/test for the following scenario:
+Generate a Playwright test in typeScript using @playwright/test for the following scenario:
 
 Navigate to https://automationexercise.com
 Verify that the Home page is visible successfully
@@ -25,7 +25,7 @@ Click on "Delete Account" button
 Verify that "ACCOUNT DELETED!" is visible and click on "Continue" button
 Prompt 2: Login Functionality (Data Driven)
 
-Generate a Playwright test in JavaScript using @playwright/test for the following scenario:
+Generate a Playwright test in typeScript using @playwright/test for the following scenario:
 
 Open the application URL: https://automationexercise.com
 Use a data-driven approach with the following test dataset:
